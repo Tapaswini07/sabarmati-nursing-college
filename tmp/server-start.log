@@ -1,0 +1,13 @@
+
+> attendance-server@1.0.0 start
+> node server.js solution\sabarmati12\sabarmati project real 5.9\sabarmati project real 2\tmp\server-start.err.log
+
+◇ injected env (5) from .env // tip: ⌘ override existing { override: true }
+MongoDB Atlas DNS servers: 8.8.8.8, 1.1.1.1
+MongoDB connected: cluster0.0vigp2h.mongodb.net/edufirmNoval
+Attendance indexes synced
+Teacher attendance indexes synced
+Student booking indexes synced
+Server running on port 5000
+
+D:\noval solution\sabarmati12\sabarmati project real 5.9\sabarmati project real 2\server>
