@@ -15,41 +15,7 @@ import {
 
 const EXAM_STORAGE_KEY = "exam-dashboard-records";
 
-const defaultExams = [
-  {
-    id: "EXM-103",
-    subject: "Chemistry",
-    department: "B.Pharm Allied",
-    examDate: "2026-05-15",
-    hallNumber: "Hall C-112",
-    status: "Completed",
-    attendancePercentage: 95,
-    resultPublished: true,
-    passPercentage: 89,
-  },
-  {
-    id: "EXM-104",
-    subject: "Biology",
-    department: "Post Basic B.Sc",
-    examDate: "2026-05-18",
-    hallNumber: "Hall D-118",
-    status: "Upcoming",
-    attendancePercentage: 0,
-    resultPublished: false,
-    passPercentage: 0,
-  },
-  {
-    id: "EXM-105",
-    subject: "Community Health",
-    department: "B.Sc Nursing",
-    examDate: "2026-05-20",
-    hallNumber: "Hall A-303",
-    status: "Completed",
-    attendancePercentage: 93,
-    resultPublished: true,
-    passPercentage: 91,
-  },
-];
+const defaultExams = [];
 
 const initialExamForm = {
   subject: "",
@@ -74,7 +40,7 @@ function loadStoredExams() {
     }
 
     const parsed = JSON.parse(rawValue);
-    return Array.isArray(parsed) && parsed.length ? parsed : defaultExams;
+    return Array.isArray(parsed) ? parsed : defaultExams;
   } catch {
     return defaultExams;
   }

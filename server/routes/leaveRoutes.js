@@ -189,7 +189,7 @@ router.post("/", upload.single("document"), async (req, res) => {
 router.patch("/:id/status", async (req, res) => {
   try {
     const status = req.body.status?.trim();
-    const reviewedBy = req.body.reviewedBy?.trim() || "HR Manager";
+    const reviewedBy = req.body.reviewedBy?.trim() || "Admin";
     const reviewNote = req.body.reviewNote?.trim() || "";
 
     if (!["Approved", "Rejected"].includes(status)) {

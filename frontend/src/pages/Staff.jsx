@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import Logo from "../assets/Logo.png";
 import { apiRequest } from "../config/api";
+import { getStoredUser } from "../utils/auth";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -599,6 +600,8 @@ async function downloadIdCardPdf(employee) {
 }
 
 function Staff() {
+  const currentUser = getStoredUser();
+  const reviewerName = currentUser?.name || currentUser?.email || "Admin";
   const [searchParams, setSearchParams] = useSearchParams();
   const initialTab = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState(
@@ -960,7 +963,7 @@ function Staff() {
         method: "PATCH",
         body: JSON.stringify({
           status,
-          reviewedBy: "HR Manager",
+          reviewedBy: reviewerName,
           reviewNote:
             status === "Approved"
               ? "Approved from staff management control center"

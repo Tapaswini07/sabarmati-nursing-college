@@ -15,6 +15,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { API_BASE_URL, apiRequest } from "../config/api";
+import { getStoredUser } from "../utils/auth";
 
 const workspaceNav = [
   { id: "dashboard", label: "Dashboard", description: "Overview and KPIs", icon: ShieldCheck },
@@ -80,6 +81,8 @@ function getDocumentUrl(path) {
 }
 
 const Leavemanagement = () => {
+  const currentUser = getStoredUser();
+  const reviewerName = currentUser?.name || currentUser?.email || "Admin";
   const [dashboard, setDashboard] = useState({
     summary: fallbackSummary,
     leaves: [],
@@ -227,7 +230,7 @@ const Leavemanagement = () => {
         method: "PATCH",
         body: JSON.stringify({
           status,
-          reviewedBy: "HR Manager",
+          reviewedBy: reviewerName,
         }),
       });
 
@@ -882,8 +885,8 @@ const Leavemanagement = () => {
                         <UserRound size={18} />
                       </span>
                       <div>
-                        <p className="text-sm font-semibold text-slate-900">HR Manager</p>
-                        <p className="text-xs text-slate-500">HR Manager</p>
+                        <p className="text-sm font-semibold text-slate-900">{reviewerName}</p>
+                        <p className="text-xs text-slate-500">Current account</p>
                       </div>
                     </div>
                   </div>
