@@ -28,7 +28,10 @@ import { syncStudentBookingIndexes } from "./utils/syncStudentBookingIndexes.js"
 
 const app = express();
 
-const allowedOrigins = [process.env.FRONTEND_URL].filter(Boolean);
+const allowedOrigins = [
+  ...(process.env.FRONTEND_URL || "").split(",").map((origin) => origin.trim()),
+  "https://sabarmati-nursing-college-859o.vercel.app",
+].filter(Boolean);
 
 function isAllowedOrigin(origin) {
   if (!origin || allowedOrigins.includes(origin)) {
