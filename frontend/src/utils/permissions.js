@@ -9,7 +9,7 @@ export const ROLE_LABELS = {
 
 export const ROLE_HOME_ROUTES = {
   super_admin: "/dashboard",
-  admin: "/dashboard",
+  admin: "/dashboard/academichub/admission",
   finance_admin: "/dashboard/finance/contra",
   student: "/dashboard/student/home",
 };
@@ -22,9 +22,9 @@ const MODULE_RULES = {
   "/dashboard": ["super_admin", "admin", "finance_admin"],
   "/dashboard/admin/registration": ["super_admin", "admin"],
   "/dashboard/academichub/admission": ["super_admin", "admin", "finance_admin"],
-  "/dashboard/academichub/admission/form": ["super_admin", "admin"],
+  "/dashboard/academichub/admission/form": ["super_admin", "admin", "finance_admin"],
   "/dashboard/academichub/admission/records": ["super_admin", "admin", "finance_admin"],
-  "/dashboard/academichub/attedence": ["super_admin", "admin", "finance_admin", "student"],
+  "/dashboard/academichub/attedence": ["super_admin", "admin", "finance_admin"],
   "/dashboard/academichub/exam": ["super_admin", "admin", "finance_admin"],
   "/dashboard/academichub/leave": ["super_admin", "admin", "finance_admin"],
   "/dashboard/academichub/noc": ["super_admin", "admin", "finance_admin"],
@@ -46,10 +46,19 @@ const MODULE_RULES = {
 };
 
 const EDIT_RULES = {
-  "/dashboard/academichub/admission": ["super_admin"],
-  "/dashboard/academichub/admission/form": ["super_admin"],
-  "/dashboard/academichub/admission/records": ["super_admin"],
-  "/dashboard/academichub/attedence": ["super_admin"],
+  "/dashboard/academichub/admission": ["super_admin", "admin"],
+  "/dashboard/academichub/admission/form": ["super_admin", "admin"],
+  "/dashboard/academichub/admission/records": ["super_admin", "admin"],
+  "/dashboard/academichub/attedence": ["super_admin", "admin"],
+  "/dashboard/finance/bank-book": ["super_admin", "finance_admin"],
+  "/dashboard/finance/journal": ["super_admin", "finance_admin"],
+  "/dashboard/finance/contra": ["super_admin", "finance_admin"],
+  "/dashboard/finance/balance-sheet": ["super_admin", "finance_admin"],
+  "/dashboard/finance/profit-loss": ["super_admin", "finance_admin"],
+  "/dashboard/finance/admission-fees": ["super_admin", "finance_admin"],
+  "/dashboard/finance/form-fill-up-fees": ["super_admin", "finance_admin"],
+  "/dashboard/finance/fine-collection": ["super_admin", "finance_admin"],
+  "/dashboard/finance/registration-fees": ["super_admin", "finance_admin"],
 };
 
 export function getRoleLabel(role) {
