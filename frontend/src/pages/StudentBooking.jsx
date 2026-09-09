@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { jsPDF } from "jspdf";
 import { apiRequest } from "../config/api";
 import { printMoneyReceipt } from "../utils/receiptPdf";
+import { getStoredUser } from "../utils/auth";
 import {
   BadgeIndianRupee,
+  Ban,
   CalendarDays,
   CheckCircle2,
   Clock3,
@@ -16,6 +18,7 @@ import {
   Printer,
   UserRound,
   UsersRound,
+  Trash2,
   XCircle,
 } from "lucide-react";
 
@@ -584,6 +587,8 @@ function downloadReportPdf(bookings, summary, courseReport) {
 }
 
 export default function StudentBooking() {
+  const currentUser = getStoredUser();
+  const canManageBookings = String(currentUser?.role || "").toLowerCase() === "super_admin";
   const [bookings, setBookings] = useState([]);
   const [formData, setFormData] = useState(initialForm);
   const [searchTerm, setSearchTerm] = useState("");
@@ -741,6 +746,33 @@ export default function StudentBooking() {
     }
     };
 
+  const updateBookingDisabled = async (booking) => {
+    try {
+      setBookingError("");
+      const response = await apiRequest(`/api/student-bookings/${booking.id}/disabled`, {
+        method: "PATCH",
+        body: JSON.stringify({ disabled: !booking.disabled }),
+      });
+      setBookings((current) => current.map((item) => (item.id === booking.id ? response.booking : item)));
+    } catch (error) {
+      setBookingError(error.message || "Unable to change student booking access.");
+    }
+  };
+
+  const deleteBooking = async (booking) => {
+    if (!window.confirm(`Delete booking ${booking.id} for ${booking.fullName}? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setBookingError("");
+      await apiRequest(`/api/student-bookings/${booking.id}`, { method: "DELETE" });
+      setBookings((current) => current.filter((item) => item.id !== booking.id));
+    } catch (error) {
+      setBookingError(error.message || "Unable to delete student booking.");
+    }
+  };
+
   return (
     <section className="flex-1 overflow-y-auto bg-slate-100 p-3 sm:p-4 lg:p-6">
       <div className="w-full space-y-6">
@@ -843,10 +875,11 @@ export default function StudentBooking() {
         )}
 
         <div className="grid w-full gap-6 xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)]">
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-[28px] border border-blue-100 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.07)] lg:p-6"
-          >
+          {canManageBookings ? (
+            <form
+              onSubmit={handleSubmit}
+              className="rounded-[28px] border border-blue-100 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.07)] lg:p-6"
+            >
             <div className="flex items-center gap-3">
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
                 <UserRound size={22} />
@@ -991,7 +1024,16 @@ export default function StudentBooking() {
               <ShieldCheck size={16} />
               {isSavingBooking ? "Saving Booking..." : "Generate Booking Confirmation"}
             </button>
-          </form>
+            </form>
+          ) : (
+            <div className="rounded-[28px] border border-blue-100 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">View Only</p>
+              <h2 className="mt-2 text-xl font-bold text-slate-900">Student booking records</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-600">
+                You can review booking details, search records, and print receipts. Booking creation and approval actions are restricted to Super Admin.
+              </p>
+            </div>
+          )}
 
           <div className="min-w-0 space-y-6">
             <div className="rounded-[28px] border border-blue-100 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.07)]">
@@ -1004,6 +1046,9 @@ export default function StudentBooking() {
                     <h2 className="mt-2 text-xl font-bold text-slate-900">All student bookings</h2>
                     <p className="mt-1 text-sm text-slate-500">
                       Showing {filteredBookings.length} of {bookings.length} records in table format.
+                    </p>
+                    <p className="mt-2 text-xs font-semibold text-blue-700">
+                      Only Super Admin can approve, reject, disable, or delete bookings.
                     </p>
                   </div>
 
@@ -1030,7 +1075,7 @@ export default function StudentBooking() {
                       <th className="w-[230px] px-5 py-4">Booking Details</th>
                       <th className="w-[160px] px-5 py-4">Payment</th>
                       <th className="w-[170px] px-5 py-4">Confirmation</th>
-                      <th className="w-[130px] px-5 py-4">Admin Action</th>
+                      <th className="w-[130px] px-5 py-4">{canManageBookings ? "Admin Action" : "View Only"}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -1085,16 +1130,28 @@ export default function StudentBooking() {
                             </button>
                           </td>
                           <td className="px-5 py-4">
-                            <div className="flex flex-col gap-2">
-                              <button type="button" onClick={() => updateBookingStatus(booking.id, "Confirmed")} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700">
-                                <CheckCircle2 size={14} />
-                                Approve
-                              </button>
-                              <button type="button" onClick={() => updateBookingStatus(booking.id, "Rejected")} className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-700">
-                                <XCircle size={14} />
-                                Reject
-                              </button>
-                            </div>
+                            {canManageBookings ? (
+                              <div className="flex flex-col gap-2">
+                                <button type="button" onClick={() => updateBookingStatus(booking.id, "Confirmed")} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700">
+                                  <CheckCircle2 size={14} />
+                                  Approve
+                                </button>
+                                <button type="button" onClick={() => updateBookingStatus(booking.id, "Rejected")} className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-700">
+                                  <XCircle size={14} />
+                                  Reject
+                                </button>
+                                <button type="button" onClick={() => updateBookingDisabled(booking)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-300 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-50">
+                                  <Ban size={14} />
+                                  {booking.disabled ? "Enable" : "Disable"}
+                                </button>
+                                <button type="button" onClick={() => deleteBooking(booking)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-200 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-50">
+                                  <Trash2 size={14} />
+                                  Delete
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="text-xs font-semibold text-slate-500">View only</span>
+                            )}
                           </td>
                         </tr>
                       ))

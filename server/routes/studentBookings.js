@@ -1,6 +1,8 @@
 import express from "express";
 import StudentBooking from "../models/StudentBooking.js";
 import BookingCounter from "../models/BookingCounter.js";
+import { attachCurrentUser, requireRole, verifyToken } from "../middleware/AuthMiddleware.js";
+import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
 const ALLOWED_STATUSES = new Set(["Pending", "Confirmed", "Rejected"]);
@@ -163,7 +165,12 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id/status", async (req, res) => {
+router.patch(
+  "/:id/status",
+  verifyToken,
+  attachCurrentUser,
+  requireRole(ROLES.SUPER_ADMIN),
+  async (req, res) => {
   try {
     const status = String(req.body.status || "").trim();
     if (!ALLOWED_STATUSES.has(status)) {
@@ -187,6 +194,53 @@ router.patch("/:id/status", async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Error updating student booking", error: error.message });
   }
-});
+  }
+);
+
+router.patch(
+  "/:id/disabled",
+  verifyToken,
+  attachCurrentUser,
+  requireRole(ROLES.SUPER_ADMIN),
+  async (req, res) => {
+    try {
+      const booking = await StudentBooking.findOneAndUpdate(
+        { id: req.params.id },
+        { disabled: Boolean(req.body.disabled) },
+        { new: true, runValidators: true }
+      ).lean();
+
+      if (!booking) {
+        return res.status(404).json({ message: "Student booking not found" });
+      }
+
+      return res.status(200).json({
+        message: `Student booking ${booking.disabled ? "disabled" : "enabled"} successfully`,
+        booking,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Error changing student booking access", error: error.message });
+    }
+  }
+);
+
+router.delete(
+  "/:id",
+  verifyToken,
+  attachCurrentUser,
+  requireRole(ROLES.SUPER_ADMIN),
+  async (req, res) => {
+    try {
+      const booking = await StudentBooking.findOneAndDelete({ id: req.params.id }).lean();
+      if (!booking) {
+        return res.status(404).json({ message: "Student booking not found" });
+      }
+
+      return res.status(200).json({ message: "Student booking deleted successfully", bookingId: booking.id });
+    } catch (error) {
+      return res.status(500).json({ message: "Error deleting student booking", error: error.message });
+    }
+  }
+);
 
 export default router;

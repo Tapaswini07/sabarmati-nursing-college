@@ -22,6 +22,7 @@ const studentBookingSchema = new mongoose.Schema(
     paymentMethod: { type: String, trim: true, default: "UPI" },
     transactionId: { type: String, trim: true, required: true },
     status: { type: String, enum: STATUS_VALUES, default: "Pending" },
+    disabled: { type: Boolean, default: false },
     smsConfirmation: { type: String, enum: CONFIRMATION_VALUES, default: "Sent" },
     emailConfirmation: { type: String, enum: CONFIRMATION_VALUES, default: "Sent" },
   },
