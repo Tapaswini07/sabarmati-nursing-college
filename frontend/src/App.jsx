@@ -151,14 +151,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/dashboard/academichub/admission/form"
-            element={
-              <ProtectedRoute allowedRoles={["super_admin", "admin"]} requiredPath="/dashboard/academichub/admission/form">
-                <StudentAdmissionFormPage />
-              </ProtectedRoute>
-            }
-          />
+<Route
+          path="/dashboard/academichub/admission/form"
+          element={
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]} requiredPath="/dashboard/academichub/admission/form">
+              <StudentAdmissionFormPage />
+            </ProtectedRoute>
+          }
+        />
           <Route
             path="/dashboard/academichub/admission/records"
             element={
@@ -271,14 +271,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/dashboard/admin/registration"
-            element={
-              <ProtectedRoute allowedRoles={["super_admin", "admin"]} requiredPath="/dashboard/admin/registration">
-                <Register />
-              </ProtectedRoute>
-            }
-          />
+<Route
+          path="/dashboard/admin/registration"
+          element={
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]} requiredPath="/dashboard/admin/registration">
+              <Register />
+            </ProtectedRoute>
+          }
+        />
           {placeholderModules.map((module) => (
             <Route
               key={module.path}
