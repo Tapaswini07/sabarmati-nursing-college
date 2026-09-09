@@ -424,8 +424,6 @@ async function syncTeachersIntoStaff() {
 
 async function loadStaff() {
   await removeDemoStaffRecords();
-  await ensureSeededStaff();
-  await syncTeachersIntoStaff();
   const staff = await Staff.find().sort({ createdAt: -1 });
   return staff.map((item) => normalizeStaffRecord(item.toObject()));
 }
