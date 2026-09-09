@@ -160,7 +160,6 @@ const fallbackStaffRecords = [
 ];
 
 const demoStaffIds = fallbackStaffRecords.map((record) => record.staffId);
-let demoStaffCleanupPromise;
 
 function toNumber(value, fallback = 0) {
   const parsed = Number(value);
@@ -384,14 +383,10 @@ async function ensureSeededStaff() {
 }
 
 async function removeDemoStaffRecords() {
-  if (!demoStaffCleanupPromise) {
-    demoStaffCleanupPromise = Staff.deleteMany({
-      staffId: { $in: demoStaffIds },
-      name: { $in: fallbackStaffRecords.map((record) => record.name) },
-    }).exec();
-  }
-
-  await demoStaffCleanupPromise;
+  await Staff.deleteMany({
+    staffId: { $in: demoStaffIds },
+    name: { $in: fallbackStaffRecords.map((record) => record.name) },
+  }).exec();
 }
 
 async function syncTeachersIntoStaff() {
