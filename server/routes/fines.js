@@ -2,7 +2,7 @@ import express from "express";
 import Fine from "../models/Fine.js";
 import {
   attachCurrentUser,
-  requireAdminOrSuperAdmin,
+  requireFinanceAccess,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
 
@@ -133,7 +133,7 @@ router.get("/stats/summary", verifyToken, attachCurrentUser, async (req, res) =>
 });
 
 // POST a new fine
-router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const {
       studentId,
@@ -212,7 +212,7 @@ router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async
 });
 
 // PUT update a fine
-router.put("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.put("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const {
       studentId,
@@ -302,7 +302,7 @@ router.put("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, asy
 });
 
 // DELETE a fine
-router.delete("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const fine = await Fine.findByIdAndDelete(req.params.id);
     if (!fine) {

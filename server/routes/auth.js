@@ -31,7 +31,7 @@ function buildUserResponse(user) {
 
 function canCurrentUserManageRole(currentRole, targetRole) {
   if (currentRole === ROLES.SUPER_ADMIN) {
-    return [ROLES.ADMIN, ROLES.STUDENT].includes(targetRole);
+    return [ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(targetRole);
   }
 
   if (currentRole === ROLES.ADMIN) {
@@ -92,15 +92,15 @@ router.post("/register", verifyToken, attachCurrentUser, async (req, res) => {
     });
   }
 
-  if (![ROLES.ADMIN, ROLES.STUDENT].includes(role)) {
-    return res.status(400).json({ message: "Only Admin and Student accounts can be created here" });
+  if (![ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(role)) {
+    return res.status(400).json({ message: "Only Admin, Finance Admin, and Student accounts can be created here" });
   }
 
   if (!canCurrentUserManageRole(req.currentUser.role, role)) {
     return res.status(403).json({
       message:
-        role === ROLES.ADMIN
-          ? "Only Super Admin can create Admin accounts"
+        [ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(role)
+          ? "Only Super Admin can create Admin and Finance Admin accounts"
           : "Only Super Admin or Admin can create Student accounts",
     });
   }
@@ -155,7 +155,7 @@ router.get("/users", verifyToken, attachCurrentUser, async (req, res) => {
     let filter = {};
 
     if (req.currentUser.role === ROLES.SUPER_ADMIN) {
-      filter = { role: { $in: [ROLES.ADMIN, ROLES.STUDENT] } };
+      filter = { role: { $in: [ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT] } };
     } else if (req.currentUser.role === ROLES.ADMIN) {
       filter = { role: ROLES.STUDENT, createdBy: req.currentUser._id };
     } else {
@@ -185,7 +185,7 @@ router.patch("/users/:id", verifyToken, attachCurrentUser, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (![ROLES.ADMIN, ROLES.STUDENT].includes(user.role)) {
+    if (![ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(user.role)) {
       return res.status(403).json({ message: "Super Admin accounts cannot be edited here" });
     }
 
@@ -197,8 +197,8 @@ router.patch("/users/:id", verifyToken, attachCurrentUser, async (req, res) => {
     const nextStudentId = req.body.studentId?.trim();
     const nextRegistrationNo = req.body.registrationNo?.trim();
 
-    if (nextRole && ![ROLES.ADMIN, ROLES.STUDENT].includes(nextRole)) {
-      return res.status(400).json({ message: "Managed role must be Admin or Student" });
+    if (nextRole && ![ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(nextRole)) {
+      return res.status(400).json({ message: "Managed role must be Admin, Finance Admin, or Student" });
     }
 
     if (nextEmail && nextEmail !== user.email) {
@@ -277,7 +277,7 @@ router.delete("/users/:id", verifyToken, attachCurrentUser, async (req, res) => 
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (![ROLES.ADMIN, ROLES.STUDENT].includes(user.role)) {
+    if (![ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(user.role)) {
       return res.status(403).json({ message: "Super Admin accounts cannot be deleted here" });
     }
 

@@ -184,6 +184,7 @@ function SummaryCard({ title, value, note, icon: Icon }) {
 export default function Department() {
   const currentUser = getStoredUser();
   const isSuperAdmin = currentUser?.role === "super_admin";
+  const canManageFinance = isSuperAdmin || currentUser?.role === "finance_admin";
   const [selectedYear, setSelectedYear] = useState(filterYears[0]);
   const [selectedView, setSelectedView] = useState(filterViews[0]);
   const [activeRole, setActiveRole] = useState("super-admin");
@@ -528,7 +529,7 @@ export default function Department() {
                     <RefreshCcw size={13} />
                     Refresh
                   </button>
-                  {isSuperAdmin && (
+                  {canManageFinance && (
                     <button
                       type="button"
                       onClick={handleClearDemoFinanceData}

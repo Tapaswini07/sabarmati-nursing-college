@@ -924,7 +924,8 @@ const Fee = () => {
   const isStudentView = currentRole === "student";
   const isSuperAdmin = currentRole === "super_admin";
   const isAdmin = currentRole === "admin";
-  const canEditReceipts = isSuperAdmin || isAdmin;
+  const canManageFinance = isSuperAdmin || currentRole === "finance_admin";
+  const canEditReceipts = canManageFinance || isAdmin;
   const [searchParams] = useSearchParams();
   const [students, setStudents] = useState([]);
   const [student, setStudent] = useState(null);
@@ -1920,7 +1921,7 @@ const Fee = () => {
   };
 
   const handleDeleteAdmissionBatch = (batch) => {
-    if (!isSuperAdmin) {
+    if (!canManageFinance) {
       setError("Only Super Admin can delete admission batches.");
       return;
     }
@@ -1945,7 +1946,7 @@ const Fee = () => {
   };
 
   const handleDeleteAcademicYear = (year) => {
-    if (!isSuperAdmin) {
+    if (!canManageFinance) {
       setError("Only Super Admin can delete academic years.");
       return;
     }
@@ -2063,7 +2064,7 @@ const Fee = () => {
   };
 
   const handleClearStudentFeeData = async () => {
-    if (!isSuperAdmin || !student?._id) {
+    if (!canManageFinance || !student?._id) {
       setError("Only Super Admin can clear student fee data.");
       return;
     }
@@ -2084,7 +2085,7 @@ const Fee = () => {
   };
 
   const handleDeleteStudent = async () => {
-    if (!isSuperAdmin || !student?._id) {
+    if (!canManageFinance || !student?._id) {
       setError("Only Super Admin can delete a student.");
       return;
     }
@@ -3645,7 +3646,7 @@ const Fee = () => {
                   </>
                 )}
 
-                {activeTab === "fee-structure" && isSuperAdmin && (
+                {activeTab === "fee-structure" && canManageFinance && (
                   <div className="space-y-5">
                     <div className="rounded-2xl border border-slate-200 bg-white p-5">
                       <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
@@ -3840,7 +3841,7 @@ const Fee = () => {
                               Student-wise Custom Fee
                             </span>
                           </div>
-                          {isSuperAdmin && student?._id && (
+                          {canManageFinance && student?._id && (
                             <div className="mt-4 flex flex-wrap gap-2">
                               <button
                                 type="button"
@@ -4088,7 +4089,7 @@ const Fee = () => {
                   </div>
                 )}
 
-                {activeTab === "admission-batches" && isSuperAdmin && (
+                {activeTab === "admission-batches" && canManageFinance && (
                   <div className="rounded-2xl border border-slate-200 bg-white p-5">
                     <div className="flex items-center gap-3">
                       <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
@@ -4127,7 +4128,7 @@ const Fee = () => {
                         {admissionBatches.map((batch) => (
                           <div key={batch} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
                             <p className="font-semibold text-slate-900">{batch}</p>
-                            {isSuperAdmin && (
+                            {canManageFinance && (
                               <button
                                 onClick={() => handleDeleteAdmissionBatch(batch)}
                                 className="rounded-lg border border-rose-200 p-2 text-rose-700 transition hover:bg-rose-50"
@@ -4142,7 +4143,7 @@ const Fee = () => {
                   </div>
                 )}
 
-                {activeTab === "academic-years" && isSuperAdmin && (
+                {activeTab === "academic-years" && canManageFinance && (
                   <div className="rounded-2xl border border-slate-200 bg-white p-5">
                     <div className="flex items-center gap-3">
                       <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-700">
@@ -4181,7 +4182,7 @@ const Fee = () => {
                         {academicYears.map((year) => (
                           <div key={year} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3">
                             <p className="font-semibold text-slate-900">{year}</p>
-                            {isSuperAdmin && (
+                            {canManageFinance && (
                               <button
                                 onClick={() => handleDeleteAcademicYear(year)}
                                 className="rounded-lg border border-rose-200 p-2 text-rose-700 transition hover:bg-rose-50"

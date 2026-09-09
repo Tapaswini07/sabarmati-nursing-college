@@ -202,7 +202,7 @@ export default function Admissionfees() {
 
   const user = getStoredUser();
   const userRole = normalizeRole(user?.role || "");
-  const isAdmin = userRole === "admin" || userRole === "super_admin";
+  const isAdmin = ["admin", "finance_admin", "super_admin"].includes(userRole);
 
   const loadStudentOptions = async () => {
     if (studentOptions.length > 0 || studentLoading) {

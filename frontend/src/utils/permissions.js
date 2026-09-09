@@ -3,12 +3,14 @@ import menuData from "../data/menuData";
 export const ROLE_LABELS = {
   super_admin: "Super Admin",
   admin: "Admin",
+  finance_admin: "Finance Admin",
   student: "Student",
 };
 
 export const ROLE_HOME_ROUTES = {
   super_admin: "/dashboard",
   admin: "/dashboard",
+  finance_admin: "/dashboard/finance/contra",
   student: "/dashboard/student/home",
 };
 
@@ -17,24 +19,24 @@ export function normalizeRole(role) {
 }
 
 const MODULE_RULES = {
-  "/dashboard": ["super_admin", "admin"],
+  "/dashboard": ["super_admin", "admin", "finance_admin"],
   "/dashboard/admin/registration": ["super_admin", "admin"],
-  "/dashboard/academichub/admission": ["super_admin", "admin"],
+  "/dashboard/academichub/admission": ["super_admin", "admin", "finance_admin"],
   "/dashboard/academichub/admission/form": ["super_admin", "admin"],
-  "/dashboard/academichub/admission/records": ["super_admin", "admin"],
-  "/dashboard/academichub/attedence": ["super_admin", "admin", "student"],
-  "/dashboard/academichub/exam": ["super_admin", "admin"],
-  "/dashboard/academichub/leave": ["super_admin", "admin"],
-  "/dashboard/academichub/noc": ["super_admin", "admin"],
-  "/dashboard/finance/bank-book": ["super_admin", "admin"],
-  "/dashboard/finance/journal": ["super_admin", "admin"],
-  "/dashboard/finance/contra": ["super_admin", "admin"],
-  "/dashboard/finance/balance-sheet": ["super_admin", "admin"],
-  "/dashboard/finance/profit-loss": ["super_admin", "admin"],
-  "/dashboard/finance/admission-fees": ["super_admin", "admin"],
-  "/dashboard/finance/form-fill-up-fees": ["super_admin", "admin"],
-  "/dashboard/finance/fine-collection": ["super_admin", "admin"],
-  "/dashboard/finance/registration-fees": ["super_admin", "admin"],
+  "/dashboard/academichub/admission/records": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/academichub/attedence": ["super_admin", "admin", "finance_admin", "student"],
+  "/dashboard/academichub/exam": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/academichub/leave": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/academichub/noc": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/bank-book": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/journal": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/contra": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/balance-sheet": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/profit-loss": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/admission-fees": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/form-fill-up-fees": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/fine-collection": ["super_admin", "admin", "finance_admin"],
+  "/dashboard/finance/registration-fees": ["super_admin", "admin", "finance_admin"],
   "/students": ["super_admin", "admin"],
   "/teachers": ["super_admin", "admin"],
   "/fees": ["super_admin", "admin", "student"],
@@ -81,7 +83,7 @@ export function getCreatableRoles(role) {
   const normalizedRole = normalizeRole(role);
 
   if (normalizedRole === "super_admin") {
-    return ["admin"];
+    return ["admin", "finance_admin"];
   }
 
   return [];

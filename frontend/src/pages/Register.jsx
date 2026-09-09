@@ -33,7 +33,7 @@ export default function Register() {
     if (currentUser?.role === "super_admin") {
       return {
         title: "Super Admin Control Center",
-        subtitle: "Create, edit, and delete admin accounts. Super admin has full ERP access and complete institutional control.",
+        subtitle: "Create, edit, and delete Admin and Finance Admin accounts. Super Admin has full ERP access and complete institutional control.",
         badge: "Full Access",
       };
     }
@@ -415,11 +415,11 @@ export default function Register() {
           <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-sm 2xl:min-w-0">
             <div className="border-b border-slate-200 px-6 py-5">
               <h2 className="text-xl font-bold text-slate-900">
-                {currentUser?.role === "super_admin" ? "Admin Accounts" : "Student Accounts"}
+                {currentUser?.role === "super_admin" ? "Managed Accounts" : "Student Accounts"}
               </h2>
               <p className="mt-1 text-sm text-slate-500">
                 {currentUser?.role === "super_admin"
-                  ? "Create, edit, and delete admin accounts from one place."
+                  ? "Create, edit, and delete Admin and Finance Admin accounts from one place."
                   : "Manage the student accounts created under your admin access."}
               </p>
             </div>

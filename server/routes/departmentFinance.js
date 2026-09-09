@@ -3,11 +3,9 @@ import DepartmentFinance from "../models/DepartmentFinance.js";
 import FinanceDataMigration from "../models/FinanceDataMigration.js";
 import {
   attachCurrentUser,
-  requireAdminOrSuperAdmin,
-  requireRole,
+  requireFinanceAccess,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
-import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
 
@@ -691,7 +689,7 @@ function buildDashboardPayload(doc, filters = {}) {
   };
 }
 
-router.get("/dashboard", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.get("/dashboard", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const doc = await ensureFinanceSeeded();
     res.status(200).json({
@@ -705,7 +703,7 @@ router.get("/dashboard", verifyToken, attachCurrentUser, requireAdminOrSuperAdmi
   }
 });
 
-router.get("/reports", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (_req, res) => {
+router.get("/reports", verifyToken, attachCurrentUser, requireFinanceAccess, async (_req, res) => {
   try {
     const doc = await ensureFinanceSeeded();
     const payload = buildDashboardPayload(doc);
@@ -727,7 +725,7 @@ router.get("/reports", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin,
   }
 });
 
-router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (_req, res) => {
+router.delete("/demo-data", verifyToken, attachCurrentUser, requireFinanceAccess, async (_req, res) => {
   try {
     const doc = await ensureFinanceSeeded();
     doc.departmentBudgets = doc.departmentBudgets.map((budget) => ({
@@ -752,7 +750,7 @@ router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SU
   }
 });
 
-router.post("/budgets", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.post("/budgets", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const department = req.body.department?.trim();
     if (!department) {
@@ -785,7 +783,7 @@ router.post("/budgets", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_
   }
 });
 
-router.post("/expenses", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.post("/expenses", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const department = req.body.department?.trim();
     const category = req.body.category?.trim();
@@ -855,7 +853,7 @@ router.post("/expenses", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER
   }
 });
 
-router.patch("/approvals/:expenseId", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.patch("/approvals/:expenseId", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const status = req.body.status?.trim();
     if (!["Approved", "Rejected", "Pending"].includes(status)) {
@@ -911,7 +909,7 @@ router.patch("/approvals/:expenseId", verifyToken, attachCurrentUser, requireRol
   }
 });
 
-router.post("/hostel-payments", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.post("/hostel-payments", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const studentName = req.body.studentName?.trim();
     const registrationNo = req.body.registrationNo?.trim();

@@ -3,7 +3,7 @@ import RegistrationFee from "../models/RegistrationFee.js";
 import RegistrationFeeConfig from "../models/RegistrationFeeConfig.js";
 import {
   attachCurrentUser,
-  requireAdminOrSuperAdmin,
+  requireFinanceAccess,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
 
@@ -323,7 +323,7 @@ router.get("/setups/current", verifyToken, attachCurrentUser, async (req, res) =
 });
 
 // POST create or update course/semester registration fee setup
-router.post("/setups", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/setups", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const { course, semester, academicYear, lastDate, active } = req.body;
     const registrationFee = toAmount(req.body.registrationFee, "Registration fee", { required: true });
@@ -361,7 +361,7 @@ router.post("/setups", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin,
 });
 
 // POST create new registration fee
-router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const { studentId, studentName, course, academicYear, semester, lastDate, paymentMethod, paymentStatus } = req.body;
 
@@ -421,7 +421,7 @@ router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async
 });
 
 // PUT update registration fee
-router.put("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.put("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const existing = await RegistrationFee.findById(req.params.id);
 
@@ -455,7 +455,7 @@ router.put("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, asy
 });
 
 // DELETE registration fee
-router.delete("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const deletedFee = await RegistrationFee.findByIdAndDelete(req.params.id);
 
@@ -487,7 +487,7 @@ router.get("/:id", verifyToken, attachCurrentUser, async (req, res) => {
 });
 
 // POST record payment
-router.post("/:id/payment", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/:id/payment", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const { amount, paymentMethod, notes } = req.body;
     const fee = await RegistrationFee.findById(req.params.id);
@@ -542,7 +542,7 @@ router.post("/:id/payment", verifyToken, attachCurrentUser, requireAdminOrSuperA
 });
 
 // POST add installment
-router.post("/:id/installments", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/:id/installments", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const { amount, dueDate } = req.body;
     const fee = await RegistrationFee.findById(req.params.id);
@@ -568,7 +568,7 @@ router.post("/:id/installments", verifyToken, attachCurrentUser, requireAdminOrS
 });
 
 // POST calculate and apply late fee
-router.post("/:id/late-fee", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/:id/late-fee", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const { lateFeeAmount } = req.body;
     const fee = await RegistrationFee.findById(req.params.id);
@@ -594,7 +594,7 @@ router.post("/:id/late-fee", verifyToken, attachCurrentUser, requireAdminOrSuper
 });
 
 // POST send reminder
-router.post("/:id/reminder", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/:id/reminder", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const { type } = req.body;
     const fee = await RegistrationFee.findById(req.params.id);

@@ -7,6 +7,7 @@ import AdmissionFeeConfig from "../models/AdmissionFeeConfig.js";
 import {
   attachCurrentUser,
   requireAdminOrSuperAdmin,
+  requireFinanceAccess,
   requireRole,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
@@ -765,7 +766,7 @@ router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async
   }
 });
 
-router.patch("/:id/fees/config", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.patch("/:id/fees/config", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ message: "Student not found" });
@@ -791,7 +792,7 @@ router.patch("/:id/fees/config", verifyToken, attachCurrentUser, requireRole(ROL
   }
 });
 
-router.patch("/:id/fees/clear", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.patch("/:id/fees/clear", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);
     if (!student) return res.status(404).json({ message: "Student not found" });
@@ -891,7 +892,7 @@ router.post("/:id/fees/razorpay-order", verifyToken, attachCurrentUser, requireR
   }
 });
 
-router.post("/:id/fees/pay", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/:id/fees/pay", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const amount = toNumber(req.body.amount);
     const method = req.body.method?.trim() || "UPI";
@@ -981,10 +982,10 @@ const updateFeeReceipt = async (req, res) => {
   }
 };
 
-router.patch("/:id/fees/receipts/:receiptNumber", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, updateFeeReceipt);
-router.post("/:id/fees/receipts/:receiptNumber", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, updateFeeReceipt);
+router.patch("/:id/fees/receipts/:receiptNumber", verifyToken, attachCurrentUser, requireFinanceAccess, updateFeeReceipt);
+router.post("/:id/fees/receipts/:receiptNumber", verifyToken, attachCurrentUser, requireFinanceAccess, updateFeeReceipt);
 
-router.post("/:id/fees/refund", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/:id/fees/refund", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const amount = toNumber(req.body.amount);
     const reason = req.body.reason?.trim() || "Fee refund";

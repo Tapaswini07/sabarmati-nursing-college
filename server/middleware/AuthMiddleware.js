@@ -52,12 +52,30 @@ export const attachCurrentUser = async (req, res, next) => {
 export const requireAdminOrSuperAdmin = (req, res, next) => {
   const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
 
-  if (![ROLES.SUPER_ADMIN, ROLES.ADMIN].includes(resolvedRole)) {
+  if (![ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole)) {
+    return res.status(403).json({ message: "Access denied: insufficient role" });
+  }
+
+  if (
+    [ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole) &&
+    !["GET", "HEAD", "OPTIONS"].includes(req.method)
+  ) {
+    return res.status(403).json({ message: "Only Super Admin can modify dashboard data" });
+  }
+
+  next();
+};
+
+// Finance Admins can manage finance data, but retain read-only access outside finance.
+export const requireFinanceAccess = (req, res, next) => {
+  const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
+
+  if (![ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole)) {
     return res.status(403).json({ message: "Access denied: insufficient role" });
   }
 
   if (resolvedRole === ROLES.ADMIN && !["GET", "HEAD", "OPTIONS"].includes(req.method)) {
-    return res.status(403).json({ message: "Only Super Admin can modify dashboard data" });
+    return res.status(403).json({ message: "Only Super Admin or Finance Admin can modify finance data" });
   }
 
   next();

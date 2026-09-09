@@ -11,11 +11,9 @@ import {
 } from "../utils/feeStructureStore.js";
 import {
   attachCurrentUser,
-  requireAdminOrSuperAdmin,
-  requireRole,
+  requireFinanceAccess,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
-import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
 
@@ -28,7 +26,7 @@ function buildFilter(query = {}) {
   );
 }
 
-router.get("/meta", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, (_req, res) => {
+router.get("/meta", verifyToken, attachCurrentUser, requireFinanceAccess, (_req, res) => {
   res.json({
     institutions: Object.values(INSTITUTIONS),
     courses: COURSE_CATALOG,
@@ -50,7 +48,7 @@ router.get("/meta", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, (_
   });
 });
 
-router.get("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.get("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const structures = await FeeStructure.find(buildFilter(req.query))
       .sort({ admissionBatch: -1, institution: 1, course: 1 })
@@ -62,7 +60,7 @@ router.get("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async 
   }
 });
 
-router.get("/dashboard", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (_req, res) => {
+router.get("/dashboard", verifyToken, attachCurrentUser, requireFinanceAccess, async (_req, res) => {
   try {
     const structures = await FeeStructure.find().lean();
     const countBy = (key) =>
@@ -105,7 +103,7 @@ router.get("/dashboard", verifyToken, attachCurrentUser, requireAdminOrSuperAdmi
   }
 });
 
-router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const payload = sanitizeFeeStructurePayload(req.body);
     const structure = await FeeStructure.create({
@@ -124,7 +122,7 @@ router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN),
   }
 });
 
-router.patch("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.patch("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const existing = await FeeStructure.findById(req.params.id);
     if (!existing) return res.status(404).json({ message: "Fee structure not found" });
@@ -143,7 +141,7 @@ router.patch("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADM
   }
 });
 
-router.patch("/:id/status", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.patch("/:id/status", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const structure = await FeeStructure.findById(req.params.id);
     if (!structure) return res.status(404).json({ message: "Fee structure not found" });
@@ -159,7 +157,7 @@ router.patch("/:id/status", verifyToken, attachCurrentUser, requireRole(ROLES.SU
   }
 });
 
-router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.delete("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const structure = await FeeStructure.findByIdAndDelete(req.params.id);
     if (!structure) return res.status(404).json({ message: "Fee structure not found" });

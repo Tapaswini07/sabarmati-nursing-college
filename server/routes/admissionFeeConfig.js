@@ -7,7 +7,7 @@ import {
 } from "../constants/feeStructures.js";
 import {
   attachCurrentUser,
-  requireAdminOrSuperAdmin,
+  requireFinanceAccess,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
 
@@ -94,7 +94,7 @@ function getAvailableAcademicYears() {
 }
 
 // Get all admission fee configs
-router.get("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.get("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     await ensureAdmissionFeeIndexes();
     const { course, academicYear } = req.query;
@@ -155,7 +155,7 @@ router.get("/current", verifyToken, attachCurrentUser, async (req, res) => {
 });
 
 // Create new admission fee config
-router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     await ensureAdmissionFeeIndexes();
     const {
@@ -220,7 +220,7 @@ router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async
 });
 
 // Update admission fee config
-router.patch("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.patch("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     await ensureAdmissionFeeIndexes();
     const { amount } = req.body;
@@ -249,7 +249,7 @@ router.patch("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, a
 });
 
 // Delete admission fee config
-router.delete("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.delete("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     await ensureAdmissionFeeIndexes();
     const config = await AdmissionFeeConfig.findByIdAndDelete(req.params.id);
@@ -265,7 +265,7 @@ router.delete("/:id", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, 
 });
 
 // Bulk create/update configs for a year
-router.post("/bulk", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/bulk", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     await ensureAdmissionFeeIndexes();
     const { academicYear, fees } = req.body;
