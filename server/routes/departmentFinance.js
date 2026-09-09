@@ -685,6 +685,31 @@ router.get("/reports", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin,
   }
 });
 
+router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (_req, res) => {
+  try {
+    const doc = await ensureFinanceSeeded();
+    doc.departmentBudgets = doc.departmentBudgets.map((budget) => ({
+      ...budget.toObject(),
+      yearlyBudget: 0,
+      semesterBudget: 0,
+      approvedBudget: 0,
+      utilizedBudget: 0,
+      pendingBudget: 0,
+      carryForwardAmount: 0,
+      remainingBudget: 0,
+      utilizationPercentage: 0,
+    }));
+    doc.expenses = [];
+    doc.hostelLedgers = [];
+    doc.alerts = [];
+    await doc.save();
+
+    return res.status(200).json({ message: "Demo finance data cleared successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message || "Error clearing demo finance data" });
+  }
+});
+
 router.post("/budgets", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
   try {
     const department = req.body.department?.trim();

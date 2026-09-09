@@ -18,8 +18,10 @@ import {
   UserCog,
   Users,
   WalletCards,
+  Trash2,
 } from "lucide-react";
 import { apiRequest } from "../config/api";
+import { getStoredUser } from "../utils/auth";
 
 const currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -180,6 +182,8 @@ function SummaryCard({ title, value, note, icon: Icon }) {
 }
 
 export default function Department() {
+  const currentUser = getStoredUser();
+  const isSuperAdmin = currentUser?.role === "super_admin";
   const [selectedYear, setSelectedYear] = useState(filterYears[0]);
   const [selectedView, setSelectedView] = useState(filterViews[0]);
   const [activeRole, setActiveRole] = useState("super-admin");
@@ -249,6 +253,22 @@ export default function Department() {
       `/api/department-finance/dashboard?${params.toString()}`
     );
     setDashboard(payload);
+  };
+
+  const handleClearDemoFinanceData = async () => {
+    if (!window.confirm("Clear all current demo Accounting & Finance amounts? This cannot be undone.")) {
+      return;
+    }
+
+    try {
+      setError("");
+      setSuccess("");
+      await apiRequest("/api/department-finance/demo-data", { method: "DELETE" });
+      setSuccess("Demo finance amounts were cleared. Finance forms remain available.");
+      await refreshDashboard();
+    } catch (clearError) {
+      setError(clearError.message || "Unable to clear demo finance data.");
+    }
   };
 
   const availableScopes = dashboard?.accessControl?.availableScopes || [selectedScope];
@@ -508,6 +528,16 @@ export default function Department() {
                     <RefreshCcw size={13} />
                     Refresh
                   </button>
+                  {isSuperAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleClearDemoFinanceData}
+                      className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
+                    >
+                      <Trash2 size={13} />
+                      Clear Demo Amounts
+                    </button>
+                  )}
                 </div>
 
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
