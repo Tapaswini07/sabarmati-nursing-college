@@ -172,6 +172,22 @@ function demoStaffFilter() {
   };
 }
 
+async function existingDemoStaffFilter() {
+  const teachers = await Teacher.find({}, { employeeId: 1, staffId: 1 }).lean();
+  const teacherKeys = teachers
+    .flatMap((teacher) => [teacher.employeeId, teacher.staffId])
+    .filter(Boolean);
+
+  return {
+    $or: [
+      ...demoStaffFilter().$or,
+      ...(teacherKeys.length
+        ? [{ staffId: { $in: teacherKeys } }, { employeeId: { $in: teacherKeys } }]
+        : []),
+    ],
+  };
+}
+
 function toNumber(value, fallback = 0) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -549,13 +565,8 @@ router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN),
 
 router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (_req, res) => {
   try {
-    const demoStaff = await Staff.find(demoStaffFilter(), { employeeId: 1, staffId: 1 }).lean();
-    const demoStaffKeys = demoStaff.flatMap((staff) => [staff.employeeId, staff.staffId]).filter(Boolean);
-    const result = await Staff.deleteMany(demoStaffFilter());
-    if (demoStaffKeys.length) {
-      await TeacherAttendance.deleteMany({ teacherId: { $in: demoStaffKeys } });
-    }
-
+    const result = await Staff.deleteMany({});
+    await TeacherAttendance.deleteMany({});
     res.status(200).json({
       message: "Demo staff data cleared successfully",
       deletedCount: result.deletedCount || 0,
