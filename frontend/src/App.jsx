@@ -292,22 +292,22 @@ function App() {
               }
             />
           ))}
-          <Route
-            path="/students"
-            element={
-              <ProtectedRoute allowedRoles={["super_admin", "admin"]} requiredPath="/students">
-                <Students />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/teachers"
-            element={
-              <ProtectedRoute allowedRoles={["super_admin", "admin"]} requiredPath="/teachers">
-                <Teacher />
-              </ProtectedRoute>
-            }
-          />
+<Route
+          path="/students"
+          element={
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]} requiredPath="/students">
+              <Students />
+            </ProtectedRoute>
+          }
+        />
+<Route
+          path="/teachers"
+          element={
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]} requiredPath="/teachers">
+              <Teacher />
+            </ProtectedRoute>
+          }
+        />
           <Route
             path="/attendance"
             element={
@@ -338,7 +338,7 @@ function App() {
         <Route
           path="/student-admission"
           element={
-            <ProtectedRoute allowedRoles={["super_admin", "admin"]}>
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]}>
               <StudentPage />
             </ProtectedRoute>
           }
@@ -346,7 +346,7 @@ function App() {
         <Route
           path="/teacher-admission"
           element={
-            <ProtectedRoute allowedRoles={["super_admin", "admin"]}>
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]}>
               <TeacherPage />
             </ProtectedRoute>
           }
@@ -360,10 +360,10 @@ function App() {
             </PublicOnlyRoute>
           }
         />
-        <Route
+<Route
           path="/register"
           element={
-            <ProtectedRoute allowedRoles={["super_admin", "admin"]}>
+            <ProtectedRoute allowedRoles={["super_admin", "admin", "finance_admin"]}>
               <Register />
             </ProtectedRoute>
           }

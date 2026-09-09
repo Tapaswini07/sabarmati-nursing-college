@@ -50,6 +50,8 @@ const EDIT_RULES = {
   "/dashboard/academichub/admission/form": ["super_admin", "admin"],
   "/dashboard/academichub/admission/records": ["super_admin", "admin"],
   "/dashboard/academichub/attedence": ["super_admin", "admin"],
+  "/dashboard/academichub/exam": ["super_admin", "admin"],
+  "/dashboard/academichub/leave": ["super_admin", "admin"],
   "/dashboard/finance/bank-book": ["super_admin", "finance_admin"],
   "/dashboard/finance/journal": ["super_admin", "finance_admin"],
   "/dashboard/finance/contra": ["super_admin", "finance_admin"],
