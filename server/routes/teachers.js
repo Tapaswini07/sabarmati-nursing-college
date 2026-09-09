@@ -1,5 +1,7 @@
 import express from "express";
 import Teacher from "../models/teacher.js";
+import TeacherAttendance from "../models/teacherAttendance.js";
+import TeacherDataMigration from "../models/TeacherDataMigration.js";
 import {
   attachCurrentUser,
   requireAdminOrSuperAdmin,
@@ -10,9 +12,25 @@ import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
 
+async function clearInitialTeacherDataOnce() {
+  const key = "initial-demo-teacher-attendance-cleanup-v1";
+  const migration = await TeacherDataMigration.findOne({ key }).lean();
+  if (migration) return;
+
+  await Teacher.deleteMany({});
+  await TeacherAttendance.deleteMany({});
+
+  try {
+    await TeacherDataMigration.create({ key });
+  } catch (error) {
+    if (error.code !== 11000) throw error;
+  }
+}
+
 // GET all teachers
 router.get("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (_req, res) => {
   try {
+    await clearInitialTeacherDataOnce();
     const teachers = await Teacher.find().sort({ createdAt: -1 });
     res.status(200).json(teachers);
   } catch (error) {
