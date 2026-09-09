@@ -160,6 +160,17 @@ const fallbackStaffRecords = [
 ];
 
 const demoStaffIds = fallbackStaffRecords.map((record) => record.staffId);
+const demoStaffNames = fallbackStaffRecords.map((record) => record.name);
+
+function demoStaffFilter() {
+  return {
+    $or: [
+      { staffId: { $in: demoStaffIds } },
+      { employeeId: { $in: demoStaffIds } },
+      { name: { $in: demoStaffNames } },
+    ],
+  };
+}
 
 function toNumber(value, fallback = 0) {
   const parsed = Number(value);
@@ -383,10 +394,7 @@ async function ensureSeededStaff() {
 }
 
 async function removeDemoStaffRecords() {
-  await Staff.deleteMany({
-    staffId: { $in: demoStaffIds },
-    name: { $in: fallbackStaffRecords.map((record) => record.name) },
-  }).exec();
+  await Staff.deleteMany(demoStaffFilter()).exec();
 }
 
 async function syncTeachersIntoStaff() {
@@ -541,8 +549,12 @@ router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN),
 
 router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (_req, res) => {
   try {
-    const result = await Staff.deleteMany({});
-    await TeacherAttendance.deleteMany({});
+    const demoStaff = await Staff.find(demoStaffFilter(), { employeeId: 1, staffId: 1 }).lean();
+    const demoStaffKeys = demoStaff.flatMap((staff) => [staff.employeeId, staff.staffId]).filter(Boolean);
+    const result = await Staff.deleteMany(demoStaffFilter());
+    if (demoStaffKeys.length) {
+      await TeacherAttendance.deleteMany({ teacherId: { $in: demoStaffKeys } });
+    }
 
     res.status(200).json({
       message: "Demo staff data cleared successfully",
