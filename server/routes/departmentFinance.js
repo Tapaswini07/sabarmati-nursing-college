@@ -1,5 +1,6 @@
 import express from "express";
 import DepartmentFinance from "../models/DepartmentFinance.js";
+import FinanceDataMigration from "../models/FinanceDataMigration.js";
 import {
   attachCurrentUser,
   requireAdminOrSuperAdmin,
@@ -309,6 +310,30 @@ async function ensureFinanceSeeded() {
   let doc = await DepartmentFinance.findOne({ moduleKey: "department-finance" });
 
   if (doc) {
+    const cleanupKey = "initial-demo-finance-cleanup-v1";
+    const cleanup = await FinanceDataMigration.findOne({ key: cleanupKey }).lean();
+    if (!cleanup) {
+      doc.departmentBudgets = doc.departmentBudgets.map((budget) => ({
+        ...budget.toObject(),
+        yearlyBudget: 0,
+        semesterBudget: 0,
+        approvedBudget: 0,
+        utilizedBudget: 0,
+        pendingBudget: 0,
+        carryForwardAmount: 0,
+        remainingBudget: 0,
+        utilizationPercentage: 0,
+      }));
+      doc.expenses = [];
+      doc.hostelLedgers = [];
+      doc.alerts = [];
+      await doc.save();
+      try {
+        await FinanceDataMigration.create({ key: cleanupKey });
+      } catch (error) {
+        if (error.code !== 11000) throw error;
+      }
+    }
     return doc;
   }
 
@@ -368,6 +393,23 @@ async function ensureFinanceSeeded() {
       }),
     ],
   });
+
+  doc.departmentBudgets = doc.departmentBudgets.map((budget) => ({
+    ...budget.toObject(),
+    yearlyBudget: 0,
+    semesterBudget: 0,
+    approvedBudget: 0,
+    utilizedBudget: 0,
+    pendingBudget: 0,
+    carryForwardAmount: 0,
+    remainingBudget: 0,
+    utilizationPercentage: 0,
+  }));
+  doc.expenses = [];
+  doc.hostelLedgers = [];
+  doc.alerts = [];
+  await doc.save();
+  await FinanceDataMigration.create({ key: "initial-demo-finance-cleanup-v1" });
 
   return doc;
 }
