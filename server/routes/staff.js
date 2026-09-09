@@ -388,7 +388,7 @@ async function removeDemoStaffRecords() {
     demoStaffCleanupPromise = Staff.deleteMany({
       staffId: { $in: demoStaffIds },
       name: { $in: fallbackStaffRecords.map((record) => record.name) },
-    });
+    }).exec();
   }
 
   await demoStaffCleanupPromise;
