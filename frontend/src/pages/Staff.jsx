@@ -32,6 +32,7 @@ import {
   Settings2,
   ShieldCheck,
   TimerReset,
+  Trash2,
   TrendingUp,
   Upload,
   UserCheck,
@@ -1065,6 +1066,54 @@ function Staff() {
     }
   };
 
+  const handleDeleteStaff = async (employee) => {
+    if (!window.confirm(`Delete the staff record for ${employee.name}? This cannot be undone.`)) {
+      return;
+    }
+
+    setActionId(`delete-${employee.id}`);
+    setError("");
+    setSuccess("");
+
+    try {
+      await apiRequest(`/api/staff/${encodeURIComponent(employee.id)}`, { method: "DELETE" });
+      setProfileMeta((current) => {
+        const next = { ...current };
+        delete next[employee.id];
+        return next;
+      });
+      appendActivity(`Staff record deleted for ${employee.name}.`);
+      setSuccess(`Staff record for ${employee.name} was deleted.`);
+      await refreshDashboard();
+    } catch (deleteError) {
+      setError(deleteError.message);
+    } finally {
+      setActionId("");
+    }
+  };
+
+  const handleClearDemoData = async () => {
+    if (!window.confirm("Clear all staff demo data and attendance records? This cannot be undone.")) {
+      return;
+    }
+
+    setActionId("clear-demo-data");
+    setError("");
+    setSuccess("");
+
+    try {
+      await apiRequest("/api/staff/demo-data", { method: "DELETE" });
+      setProfileMeta({});
+      setActivityLog([]);
+      setSuccess("Demo staff data was cleared. The staff options are still available.");
+      await refreshDashboard();
+    } catch (clearError) {
+      setError(clearError.message);
+    } finally {
+      setActionId("");
+    }
+  };
+
   const complianceCards = [
     {
       title: "PF Contribution",
@@ -1481,6 +1530,7 @@ function Staff() {
                 <th className="px-3 py-3 font-semibold">Contact</th>
                 <th className="px-3 py-3 font-semibold">Joining Date</th>
                 <th className="px-3 py-3 font-semibold">Status</th>
+                <th className="px-3 py-3 font-semibold">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -1510,6 +1560,18 @@ function Staff() {
                     >
                       {employee.staffStatus}
                     </span>
+                  </td>
+                  <td className="px-3 py-3">
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteStaff(employee)}
+                      disabled={actionId === `delete-${employee.id}`}
+                      title={`Delete ${employee.name}`}
+                      className="inline-flex items-center gap-2 rounded-xl border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Trash2 size={15} />
+                      {actionId === `delete-${employee.id}` ? "Deleting..." : "Delete"}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -2278,6 +2340,15 @@ function Staff() {
                     >
                       <FileSpreadsheet size={16} />
                       Export Reports
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleClearDemoData}
+                      disabled={actionId === "clear-demo-data"}
+                      className="inline-flex items-center justify-center gap-2 rounded-2xl border border-rose-300/40 bg-rose-500/15 px-4 py-3 text-sm font-semibold text-rose-100 transition hover:bg-rose-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Trash2 size={16} />
+                      {actionId === "clear-demo-data" ? "Clearing..." : "Clear Demo Data"}
                     </button>
                   </div>
                 </div>

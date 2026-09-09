@@ -159,6 +159,9 @@ const fallbackStaffRecords = [
   },
 ];
 
+const demoStaffIds = fallbackStaffRecords.map((record) => record.staffId);
+let demoStaffCleanupPromise;
+
 function toNumber(value, fallback = 0) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
@@ -377,10 +380,18 @@ async function ensureSeededStaff() {
       teachers.map((teacher, index) => buildStaffRecordFromTeacher(teacher, index)),
       { ordered: false }
     );
-    return;
+  }
+}
+
+async function removeDemoStaffRecords() {
+  if (!demoStaffCleanupPromise) {
+    demoStaffCleanupPromise = Staff.deleteMany({
+      staffId: { $in: demoStaffIds },
+      name: { $in: fallbackStaffRecords.map((record) => record.name) },
+    });
   }
 
-  await Staff.insertMany(fallbackStaffRecords, { ordered: false });
+  await demoStaffCleanupPromise;
 }
 
 async function syncTeachersIntoStaff() {
@@ -417,6 +428,7 @@ async function syncTeachersIntoStaff() {
 }
 
 async function loadStaff() {
+  await removeDemoStaffRecords();
   await ensureSeededStaff();
   await syncTeachersIntoStaff();
   const staff = await Staff.find().sort({ createdAt: -1 });
@@ -531,6 +543,43 @@ router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN),
     }
 
     res.status(500).json({ message: error.message || "Error creating staff payroll record" });
+  }
+});
+
+router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (_req, res) => {
+  try {
+    const result = await Staff.deleteMany({});
+    await TeacherAttendance.deleteMany({});
+
+    res.status(200).json({
+      message: "Demo staff data cleared successfully",
+      deletedCount: result.deletedCount || 0,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Error clearing demo staff data" });
+  }
+});
+
+router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+  try {
+    const staff = await Staff.findOneAndDelete({
+      $or: [{ staffId: req.params.id }, { employeeId: req.params.id }],
+    });
+
+    if (!staff) {
+      return res.status(404).json({ message: "Staff record not found" });
+    }
+
+    await TeacherAttendance.deleteMany({
+      teacherId: staff.employeeId || staff.staffId,
+    });
+
+    res.status(200).json({
+      message: "Staff record deleted successfully",
+      staffId: staff.staffId,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Error deleting staff record" });
   }
 });
 
