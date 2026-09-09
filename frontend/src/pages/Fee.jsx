@@ -851,17 +851,17 @@ function statusClass(status) {
 }
 
 const STUDENT_CUSTOM_FEE_HEADS = [
-  { name: "Course Fee", amount: 50000 },
-  { name: "Miscellaneous Expenses", amount: 30000, isGroup: true },
-  { name: "• Library Fee", amount: 10000, isBreakdown: true },
-  { name: "• Practical Fee", amount: 10000, isBreakdown: true },
-  { name: "• Travel Charges", amount: 10000, isBreakdown: true },
+  { name: "Course Fee", amount: 0 },
+  { name: "Miscellaneous Expenses", amount: 0, isGroup: true },
+  { name: "• Library Fee", amount: 0, isBreakdown: true },
+  { name: "• Practical Fee", amount: 0, isBreakdown: true },
+  { name: "• Travel Charges", amount: 0, isBreakdown: true },
 ];
 
 const STUDENT_CUSTOM_INSTALLMENTS = [
-  { name: "Installment 1", dueDate: "15 July", amount: 25000, paid: 25000, status: "Paid" },
-  { name: "Installment 2", dueDate: "15 October", amount: 25000, paid: 10000, due: 15000, status: "Due" },
-  { name: "Installment 3", dueDate: "15 January", amount: 34500, paid: 0, status: "Pending" },
+  { name: "Installment 1", dueDate: "", amount: 0, paid: 0, status: "Pending" },
+  { name: "Installment 2", dueDate: "", amount: 0, paid: 0, due: 0, status: "Pending" },
+  { name: "Installment 3", dueDate: "", amount: 0, paid: 0, status: "Pending" },
 ];
 
 const STUDENT_CUSTOM_TIMELINE = [
@@ -873,9 +873,9 @@ const STUDENT_CUSTOM_TIMELINE = [
 ];
 
 const STUDENT_CUSTOM_LEDGER = [
-  { date: "10 Jul", description: "Admission Fee", debit: 5000, credit: 5000, balance: 0 },
-  { date: "15 Jul", description: "Tuition Fee", debit: 30000, credit: 25000, balance: 5000 },
-  { date: "18 Jul", description: "Fine", debit: 1000, credit: 0, balance: 6000 },
+  { date: "", description: "Admission Fee", debit: 0, credit: 0, balance: 0 },
+  { date: "", description: "Tuition Fee", debit: 0, credit: 0, balance: 0 },
+  { date: "", description: "Fine", debit: 0, credit: 0, balance: 0 },
 ];
 
 const STUDENT_CUSTOM_ACTIONS = [
@@ -910,12 +910,12 @@ const SUPER_ADMIN_FEE_CONTROLS = [
 ];
 
 const FEE_BREAKDOWN_CHART = [
-  { label: "Tuition", value: 30000, tone: "bg-blue-700" },
-  { label: "Hostel", value: 45000, tone: "bg-emerald-700" },
-  { label: "Exam", value: 2500, tone: "bg-amber-600" },
-  { label: "Library", value: 1500, tone: "bg-sky-600" },
-  { label: "Bus", value: 15000, tone: "bg-violet-700" },
-  { label: "Others", value: 14000, tone: "bg-slate-700" },
+  { label: "Tuition", value: 0, tone: "bg-blue-700" },
+  { label: "Hostel", value: 0, tone: "bg-emerald-700" },
+  { label: "Exam", value: 0, tone: "bg-amber-600" },
+  { label: "Library", value: 0, tone: "bg-sky-600" },
+  { label: "Bus", value: 0, tone: "bg-violet-700" },
+  { label: "Others", value: 0, tone: "bg-slate-700" },
 ];
 
 const Fee = () => {
@@ -1187,10 +1187,10 @@ const Fee = () => {
       ["Course Fee"].includes(item.name)
     ).reduce((sum, item) => sum + item.amount, 0) * 0.2
   );
-  const customDiscount = 5000;
-  const customFine = 1000;
-  const customExtraCharge = 2500;
-  const customPaid = 45000;
+  const customDiscount = 0;
+  const customFine = 0;
+  const customExtraCharge = 0;
+  const customPaid = 0;
   const customNetPayable =
     customFeeTotal - scholarshipAmount - customDiscount + customFine + customExtraCharge;
   const customRemaining = Math.max(customNetPayable - customPaid, 0);
@@ -3899,18 +3899,18 @@ const Fee = () => {
                             <div className="rounded-xl bg-slate-50 p-4">
                               <p className="font-bold text-slate-900">Discount</p>
                               <input defaultValue="Merit Scholarship" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
-                              <input defaultValue="5000" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
+                              <input defaultValue="0" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
                               <p className="font-bold text-slate-900">Fine</p>
                               <input defaultValue="Late Payment" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
-                              <input defaultValue="1000" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
+                              <input defaultValue="0" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
                             </div>
                             <div className="rounded-xl bg-slate-50 p-4">
                               <p className="font-bold text-slate-900">Extra Charge</p>
                               <input defaultValue="Convocation Fee" className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
                               <div className="mt-3 flex gap-2">
-                                <input defaultValue="2500" className="min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
+                                <input defaultValue="0" className="min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
                                 <button type="button" className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-bold text-white">Add</button>
                               </div>
                             </div>
