@@ -1114,6 +1114,33 @@ function Staff() {
     }
   };
 
+  const handleClearDemoLeaveData = async () => {
+    if (!window.confirm("Clear all current demo leave records? This cannot be undone.")) {
+      return;
+    }
+
+    setActionId("clear-demo-leave-data");
+    setError("");
+    setSuccess("");
+
+    try {
+      await apiRequest("/api/leaves/demo-data", { method: "DELETE" });
+      setLeaveRows([]);
+      setPendingApprovals([]);
+      setLeaveSummary({
+        totalLeaves: 0,
+        approvedLeaves: 0,
+        pendingRequests: 0,
+        rejectedLeaves: 0,
+      });
+      setSuccess("Demo leave data was cleared. The Leave option is still available.");
+    } catch (clearError) {
+      setError(clearError.message);
+    } finally {
+      setActionId("");
+    }
+  };
+
   const complianceCards = [
     {
       title: "PF Contribution",
@@ -1789,6 +1816,17 @@ function Staff() {
               <FileSpreadsheet size={16} />
               Export Report
             </button>
+            {currentUser?.role === "super_admin" && (
+              <button
+                type="button"
+                onClick={handleClearDemoLeaveData}
+                disabled={actionId === "clear-demo-leave-data"}
+                className="inline-flex items-center gap-2 rounded-xl border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Trash2 size={16} />
+                {actionId === "clear-demo-leave-data" ? "Clearing..." : "Clear Demo Leave Data"}
+              </button>
+            )}
           </div>
 
           <div className="mt-5 overflow-x-auto">

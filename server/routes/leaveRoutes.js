@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 import LeaveRequest from "../models/LeaveRequest.js";
+import { attachCurrentUser, requireRole, verifyToken } from "../middleware/AuthMiddleware.js";
+import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
 const uploadsDir = path.resolve("uploads", "leave-documents");
@@ -185,6 +187,24 @@ router.post("/", upload.single("document"), async (req, res) => {
     res.status(500).json({ message: error.message || "Error creating leave request" });
   }
 });
+
+router.delete(
+  "/demo-data",
+  verifyToken,
+  attachCurrentUser,
+  requireRole(ROLES.SUPER_ADMIN),
+  async (_req, res) => {
+    try {
+      const result = await LeaveRequest.deleteMany({});
+      return res.status(200).json({
+        message: "Demo leave data cleared successfully",
+        deletedCount: result.deletedCount || 0,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Error clearing demo leave data", error: error.message });
+    }
+  }
+);
 
 router.patch("/:id/status", async (req, res) => {
   try {
