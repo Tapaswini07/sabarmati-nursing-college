@@ -602,6 +602,7 @@ async function downloadIdCardPdf(employee) {
 
 function Staff() {
   const currentUser = getStoredUser();
+  const canDeleteStaff = ["admin", "super_admin"].includes(String(currentUser?.role || "").toLowerCase());
   const reviewerName = currentUser?.name || currentUser?.email || "Admin";
   const [searchParams, setSearchParams] = useSearchParams();
   const initialTab = searchParams.get("tab");
@@ -1486,11 +1487,11 @@ function Staff() {
       </form>
 
       <div className="space-y-6">
-        {currentUser?.role === "super_admin" && selectedEmployee && (
+        {canDeleteStaff && selectedEmployee && (
           <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-700">Super Admin Control</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-700">Admin Delete Control</p>
                 <h3 className="mt-2 text-xl font-bold text-slate-900">Recently Created Staff</h3>
                 <p className="mt-1 text-sm text-slate-600">{selectedEmployee.name} • {selectedEmployee.id}</p>
               </div>
@@ -1611,16 +1612,18 @@ function Staff() {
                     </span>
                   </td>
                   <td className="px-3 py-3">
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteStaff(employee)}
-                      disabled={actionId === `delete-${employee.id}`}
-                      title={`Delete ${employee.name}`}
-                      className="inline-flex items-center gap-2 rounded-xl border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      <Trash2 size={15} />
-                      {actionId === `delete-${employee.id}` ? "Deleting..." : "Delete"}
-                    </button>
+                    {canDeleteStaff && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteStaff(employee)}
+                        disabled={actionId === `delete-${employee.id}`}
+                        title={`Delete ${employee.name}`}
+                        className="inline-flex items-center gap-2 rounded-xl border border-rose-200 px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Trash2 size={15} />
+                        {actionId === `delete-${employee.id}` ? "Deleting..." : "Delete"}
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

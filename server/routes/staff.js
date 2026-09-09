@@ -597,7 +597,7 @@ router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SU
   }
 });
 
-router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN, ROLES.ADMIN), async (req, res) => {
   try {
     const staff = await Staff.findOneAndDelete({
       $or: [{ staffId: req.params.id }, { employeeId: req.params.id }],
