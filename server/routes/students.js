@@ -791,6 +791,37 @@ router.patch("/:id/fees/config", verifyToken, attachCurrentUser, requireRole(ROL
   }
 });
 
+router.patch("/:id/fees/clear", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) return res.status(404).json({ message: "Student not found" });
+
+    student.baseFee = 0;
+    student.totalFee = 0;
+    student.paidAmount = 0;
+    student.pendingAmount = 0;
+    student.outstandingAmount = 0;
+    student.outstandingStatus = "Cleared";
+    student.feeStructure = [];
+    student.extraCharges = [];
+    student.examFees = [];
+    student.discounts = [];
+    student.fineRules = [];
+    student.paymentHistory = [];
+    student.refunds = [];
+    student.ledgerEntries = [];
+    await student.save();
+    await persistStudentFees(student);
+
+    return res.status(200).json({
+      message: "Student fee data cleared successfully",
+      student: buildStudentSnapshot(student),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message || "Error clearing student fee data" });
+  }
+});
+
 router.post("/:id/promote", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const student = await Student.findById(req.params.id);

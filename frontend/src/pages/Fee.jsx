@@ -2062,6 +2062,27 @@ const Fee = () => {
     setEditFeeAmount("");
   };
 
+  const handleClearStudentFeeData = async () => {
+    if (!isSuperAdmin || !student?._id) {
+      setError("Only Super Admin can clear student fee data.");
+      return;
+    }
+
+    if (!window.confirm(`Clear all fee data for ${student.studentName || student.fullName}? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const response = await apiRequest(`/api/students/${student._id}/fees/clear`, { method: "PATCH" });
+      setStudent(response.student);
+      setStudents((current) => current.map((item) => (item._id === response.student._id ? response.student : item)));
+      setCustomFeeHeads(STUDENT_CUSTOM_FEE_HEADS.map((item) => ({ ...item })));
+      setSuccess("Student fee data was cleared. The student profile remains available.");
+    } catch (clearError) {
+      setError(clearError.message || "Unable to clear student fee data.");
+    }
+  };
+
   const notices = isStudentView
     ? []
     : [
@@ -3796,6 +3817,16 @@ const Fee = () => {
                               Student-wise Custom Fee
                             </span>
                           </div>
+                          {isSuperAdmin && student?._id && (
+                            <button
+                              type="button"
+                              onClick={handleClearStudentFeeData}
+                              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-50"
+                            >
+                              <Trash2 size={14} />
+                              Clear Student Fee Data
+                            </button>
+                          )}
                           <div className="mt-5 overflow-x-auto">
                             <table className="min-w-full text-left text-sm">
                               <thead>
