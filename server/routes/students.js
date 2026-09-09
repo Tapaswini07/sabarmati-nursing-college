@@ -1059,7 +1059,12 @@ router.post("/:id/fees/verify-razorpay", verifyToken, attachCurrentUser, require
 
 router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
   try {
-    await Student.findByIdAndDelete(req.params.id);
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    await Fee.deleteOne({ studentRef: student._id });
     return res.status(200).json({ message: "Student deleted successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Error deleting student", error: error.message });

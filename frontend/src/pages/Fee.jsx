@@ -2083,6 +2083,29 @@ const Fee = () => {
     }
   };
 
+  const handleDeleteStudent = async () => {
+    if (!isSuperAdmin || !student?._id) {
+      setError("Only Super Admin can delete a student.");
+      return;
+    }
+
+    if (!window.confirm(`Delete ${student.studentName || student.fullName}? This removes the student and all fee details permanently.`)) {
+      return;
+    }
+
+    try {
+      await apiRequest(`/api/students/${student._id}`, { method: "DELETE" });
+      const nextStudents = students.filter((item) => item._id !== student._id);
+      setStudents(nextStudents);
+      setStudent(null);
+      setSelectedRegistrationNo("");
+      setSuccess("Demo student and all fee details were deleted.");
+      await refreshAnalytics(nextStudents);
+    } catch (deleteError) {
+      setError(deleteError.message || "Unable to delete student.");
+    }
+  };
+
   const notices = isStudentView
     ? []
     : [
@@ -3818,14 +3841,24 @@ const Fee = () => {
                             </span>
                           </div>
                           {isSuperAdmin && student?._id && (
-                            <button
-                              type="button"
-                              onClick={handleClearStudentFeeData}
-                              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-50"
-                            >
-                              <Trash2 size={14} />
-                              Clear Student Fee Data
-                            </button>
+                            <div className="mt-4 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={handleClearStudentFeeData}
+                                className="inline-flex items-center gap-2 rounded-xl border border-rose-200 px-3 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-50"
+                              >
+                                <Trash2 size={14} />
+                                Clear Student Fee Data
+                              </button>
+                              <button
+                                type="button"
+                                onClick={handleDeleteStudent}
+                                className="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-rose-700"
+                              >
+                                <Trash2 size={14} />
+                                Delete Student
+                              </button>
+                            </div>
                           )}
                           <div className="mt-5 overflow-x-auto">
                             <table className="min-w-full text-left text-sm">
