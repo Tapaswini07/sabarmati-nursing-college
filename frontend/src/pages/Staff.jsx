@@ -1486,6 +1486,28 @@ function Staff() {
       </form>
 
       <div className="space-y-6">
+        {currentUser?.role === "super_admin" && selectedEmployee && (
+          <div className="rounded-[28px] border border-rose-200 bg-rose-50 p-5 shadow-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-700">Super Admin Control</p>
+                <h3 className="mt-2 text-xl font-bold text-slate-900">Recently Created Staff</h3>
+                <p className="mt-1 text-sm text-slate-600">{selectedEmployee.name} • {selectedEmployee.id}</p>
+              </div>
+              <Trash2 className="text-rose-600" size={22} />
+            </div>
+            <button
+              type="button"
+              onClick={() => handleDeleteStaff(selectedEmployee)}
+              disabled={actionId === `delete-${selectedEmployee.id}`}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Trash2 size={16} />
+              {actionId === `delete-${selectedEmployee.id}` ? "Deleting..." : "Delete Staff Record"}
+            </button>
+          </div>
+        )}
+
         <div className="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
