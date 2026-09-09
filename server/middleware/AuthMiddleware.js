@@ -57,16 +57,31 @@ export const requireAdminOrSuperAdmin = (req, res, next) => {
   }
 
   if (
-    [ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole) &&
+    resolvedRole === ROLES.FINANCE_ADMIN &&
     !["GET", "HEAD", "OPTIONS"].includes(req.method)
   ) {
-    return res.status(403).json({ message: "Only Super Admin can modify dashboard data" });
+    return res.status(403).json({ message: "Finance Admin has view-only access to academic modules" });
   }
 
   next();
 };
 
-// Finance Admins can manage finance data, but retain read-only access outside finance.
+// Academic routes: Super Admin & Admin can manage, Finance Admin has read-only access.
+export const requireAcademicAccess = (req, res, next) => {
+  const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
+
+  if (![ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole)) {
+    return res.status(403).json({ message: "Access denied: insufficient role" });
+  }
+
+  if (resolvedRole === ROLES.FINANCE_ADMIN && !["GET", "HEAD", "OPTIONS"].includes(req.method)) {
+    return res.status(403).json({ message: "Finance Admin has view-only access to academic modules" });
+  }
+
+  next();
+};
+
+// Finance Admins can manage finance data, while Academic Admins have read-only access.
 export const requireFinanceAccess = (req, res, next) => {
   const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
 
@@ -80,3 +95,4 @@ export const requireFinanceAccess = (req, res, next) => {
 
   next();
 };
+

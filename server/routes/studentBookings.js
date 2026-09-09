@@ -113,7 +113,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
   const maxCreateAttempts = 5;
 
   for (let attempt = 1; attempt <= maxCreateAttempts; attempt += 1) {

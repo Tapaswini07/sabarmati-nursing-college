@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 import LeaveRequest from "../models/LeaveRequest.js";
-import { attachCurrentUser, requireRole, verifyToken } from "../middleware/AuthMiddleware.js";
+import { attachCurrentUser, requireAcademicAccess, requireRole, verifyToken } from "../middleware/AuthMiddleware.js";
 import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
@@ -206,7 +206,7 @@ router.delete(
   }
 );
 
-router.patch("/:id/status", async (req, res) => {
+router.patch("/:id/status", verifyToken, attachCurrentUser, requireAcademicAccess, async (req, res) => {
   try {
     const status = req.body.status?.trim();
     const reviewedBy = req.body.reviewedBy?.trim() || "Admin";

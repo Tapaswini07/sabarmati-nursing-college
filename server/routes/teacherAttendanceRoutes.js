@@ -2,6 +2,7 @@ import express from "express";
 import TeacherAttendance from "../models/teacherAttendance.js";
 import {
   attachCurrentUser,
+  requireAcademicAccess,
   requireAdminOrSuperAdmin,
   requireRole,
   verifyToken,
@@ -10,7 +11,7 @@ import { ROLES } from "../constants/roles.js";
 
 const router = express.Router();
 
-router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireAcademicAccess, async (req, res) => {
   const teacherId = req.body.teacherId?.trim();
   const teacherName = req.body.teacherName?.trim();
   const date = req.body.date?.trim();

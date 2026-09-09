@@ -2,6 +2,7 @@ import express from "express";
 import Attendance from "../models/attendance.js";
 import {
   attachCurrentUser,
+  requireAcademicAccess,
   requireAdminOrSuperAdmin,
   requireRole,
   verifyToken,
@@ -21,7 +22,7 @@ function buildStudentAttendanceIds(student) {
   ].filter(Boolean);
 }
 
-router.post("/", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireAcademicAccess, async (req, res) => {
   const studentId = req.body.studentId?.trim();
   const studentName = req.body.studentName?.trim();
   const date = req.body.date?.trim();

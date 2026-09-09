@@ -6,6 +6,7 @@ import TeacherAttendance from "../models/teacherAttendance.js";
 import {
   attachCurrentUser,
   requireAdminOrSuperAdmin,
+  requireFinanceAccess,
   requireRole,
   verifyToken,
 } from "../middleware/AuthMiddleware.js";
@@ -504,7 +505,7 @@ router.get("/payroll-dashboard", verifyToken, attachCurrentUser, requireAdminOrS
   }
 });
 
-router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const staffId = req.body.staffId?.trim() || req.body.employeeId?.trim();
     const name = req.body.name?.trim();
@@ -597,7 +598,7 @@ router.delete("/demo-data", verifyToken, attachCurrentUser, requireRole(ROLES.SU
   }
 });
 
-router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN, ROLES.ADMIN), async (req, res) => {
+router.delete("/:id", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const staff = await Staff.findOneAndDelete({
       $or: [{ staffId: req.params.id }, { employeeId: req.params.id }],
@@ -620,7 +621,7 @@ router.delete("/:id", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_AD
   }
 });
 
-router.patch("/:id/status", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.patch("/:id/status", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const status = req.body.status?.trim();
     const approvedBy = req.body.approvedBy?.trim() || "Payroll Admin";

@@ -8,6 +8,7 @@ import AdmissionFeeConfig from "../models/AdmissionFeeConfig.js";
 import Student from "../models/student.js";
 import {
   attachCurrentUser,
+  requireAcademicAccess,
   requireAdminOrSuperAdmin,
   requireRole,
   verifyToken,
@@ -1064,7 +1065,7 @@ router.get("/admission/export/xlsx", verifyToken, attachCurrentUser, requireAdmi
   }
 });
 
-router.patch("/admission/:id/status", verifyToken, attachCurrentUser, requireAdminOrSuperAdmin, async (req, res) => {
+router.patch("/admission/:id/status", verifyToken, attachCurrentUser, requireAcademicAccess, async (req, res) => {
   try {
     const status = trimValue(req.body.status);
     if (!["Pending", "Approved"].includes(status)) {
