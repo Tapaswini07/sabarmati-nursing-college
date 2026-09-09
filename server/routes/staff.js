@@ -1,5 +1,6 @@
 import express from "express";
 import Staff from "../models/Staff.js";
+import StaffDataMigration from "../models/StaffDataMigration.js";
 import Teacher from "../models/teacher.js";
 import TeacherAttendance from "../models/teacherAttendance.js";
 import {
@@ -161,6 +162,7 @@ const fallbackStaffRecords = [
 
 const demoStaffIds = fallbackStaffRecords.map((record) => record.staffId);
 const demoStaffNames = fallbackStaffRecords.map((record) => record.name);
+const INITIAL_STAFF_CLEANUP_KEY = "initial-demo-staff-cleanup-v1";
 
 function demoStaffFilter() {
   return {
@@ -413,6 +415,24 @@ async function removeDemoStaffRecords() {
   await Staff.deleteMany(demoStaffFilter()).exec();
 }
 
+async function clearInitialStaffDataOnce() {
+  const migration = await StaffDataMigration.findOne({ key: INITIAL_STAFF_CLEANUP_KEY }).lean();
+  if (migration) {
+    return;
+  }
+
+  await Staff.deleteMany({}).exec();
+  await TeacherAttendance.deleteMany({}).exec();
+
+  try {
+    await StaffDataMigration.create({ key: INITIAL_STAFF_CLEANUP_KEY });
+  } catch (error) {
+    if (error.code !== 11000) {
+      throw error;
+    }
+  }
+}
+
 async function syncTeachersIntoStaff() {
   const teachers = await Teacher.find().sort({ createdAt: -1 });
   if (!teachers.length) {
@@ -447,6 +467,7 @@ async function syncTeachersIntoStaff() {
 }
 
 async function loadStaff() {
+  await clearInitialStaffDataOnce();
   await removeDemoStaffRecords();
   const staff = await Staff.find().sort({ createdAt: -1 });
   return staff.map((item) => normalizeStaffRecord(item.toObject()));
