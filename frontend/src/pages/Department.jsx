@@ -353,6 +353,21 @@ export default function Department() {
     setError("");
   };
 
+  const handleBudgetDelete = async (budgetId) => {
+    if (!window.confirm("Delete this department budget record?")) return;
+    try {
+      setError("");
+      setSuccess("");
+      const result = await apiRequest(`/api/department-finance/budgets/${budgetId}`, {
+        method: "DELETE",
+      });
+      setSuccess(result?.message || "Department budget deleted successfully.");
+      await refreshDashboard();
+    } catch (requestError) {
+      setError(requestError.message || "Failed to delete department budget.");
+    }
+  };
+
   const handleBudgetSubmit = async () => {
     try {
       setSavingBudget(true);
@@ -880,6 +895,7 @@ export default function Department() {
                           <th className="px-3 py-3 font-semibold">Used</th>
                           <th className="px-3 py-3 font-semibold">Remaining</th>
                           <th className="px-3 py-3 font-semibold">Status</th>
+                          <th className="px-3 py-3 font-semibold">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -906,6 +922,15 @@ export default function Department() {
                               >
                                 {item.utilizationPercentage}% used
                               </span>
+                            </td>
+                            <td className="px-3 py-3">
+                              <button
+                                type="button"
+                                onClick={() => handleBudgetDelete(item.budgetId)}
+                                className="rounded-full border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-100"
+                              >
+                                Delete
+                              </button>
                             </td>
                           </tr>
                         ))}

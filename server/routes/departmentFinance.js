@@ -783,6 +783,30 @@ router.post("/budgets", verifyToken, attachCurrentUser, requireFinanceAccess, as
   }
 });
 
+router.delete("/budgets/:budgetId", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
+  try {
+    const doc = await ensureFinanceSeeded();
+    const budgetIndex = doc.departmentBudgets.findIndex(
+      (item) => item.budgetId === req.params.budgetId
+    );
+
+    if (budgetIndex === -1) {
+      return res.status(404).json({ message: "Department budget not found" });
+    }
+
+    const removed = doc.departmentBudgets.splice(budgetIndex, 1)[0];
+    await doc.save();
+
+    res.status(200).json({
+      message: `Budget for ${removed.department} deleted successfully`,
+      budgetId: removed.budgetId,
+      overview: buildOverview(doc),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message || "Error deleting department budget" });
+  }
+});
+
 router.post("/expenses", verifyToken, attachCurrentUser, requireFinanceAccess, async (req, res) => {
   try {
     const department = req.body.department?.trim();

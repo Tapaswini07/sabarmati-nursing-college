@@ -11,12 +11,13 @@ import {
 } from "lucide-react";
 import CategoryNavbar from "../components/CategoryNavbar";
 import { getStoredUser } from "../utils/auth";
-import { getRoleLabel, getVisibleMenuData } from "../utils/permissions";
+import { getRoleLabel, getVisibleMenuData, normalizeRole } from "../utils/permissions";
 import campusBackground from "../assets/campus-background.jpeg";
 
 const roleDescriptions = {
   super_admin: "Full ERP access across student management, attendance, admissions, accounts, payroll, reports, hostel, dashboard, and settings.",
   admin: "Admin can edit admission and attendance modules, create student accounts, and view all remaining modules in read-only mode.",
+  finance_admin: "Finance Admin can manage fees, staff payroll, accounts, and all financial modules, and view academic modules in read-only mode.",
   student: "Student can view attendance, admission details, fee receipts, notifications, and personal profile with no edit access.",
 };
 
@@ -35,6 +36,13 @@ const roleHighlights = {
     "Student Reports",
     "View-only ERP Modules",
   ],
+  finance_admin: [
+    "Fee Collection & Dues",
+    "Staff & Payroll Management",
+    "Admission Fees & Form Fill-Up",
+    "Accounts & Financial Reports",
+    "View-only Academic Modules",
+  ],
   student: [
     "Personal Profile",
     "Attendance Status",
@@ -46,14 +54,15 @@ const roleHighlights = {
 
 const Dashboard = () => {
   const user = getStoredUser();
-  const role = user?.role || "student";
+  const role = normalizeRole(user?.role) || "student";
+  const normalizedUser = { ...user, role };
   const visibleMenuData = getVisibleMenuData(role);
   const initialMenu = Object.keys(visibleMenuData)[0];
   const [activeMenu, setActiveMenu] = useState(initialMenu);
 
   const resolvedMenuData = getVisibleMenuData(role);
   const resolvedActiveMenu = resolvedMenuData[activeMenu] ? activeMenu : Object.keys(resolvedMenuData)[0];
-  const activeCategory = resolvedMenuData[resolvedActiveMenu];
+  const activeCategory = resolvedMenuData[resolvedActiveMenu] || Object.values(resolvedMenuData)[0];
 
   const summary = useMemo(() => {
     const totalModules = Object.values(resolvedMenuData).reduce((sum, category) => sum + category.items.length, 0);
@@ -95,7 +104,7 @@ const Dashboard = () => {
                   Welcome to {summary.roleLabel} Dashboard
                 </h1>
                 <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-200 sm:text-base">
-                  {roleDescriptions[role]}
+                  {roleDescriptions[role] || "Role-specific access to all modules you are permitted to view and manage."}
                 </p>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -160,7 +169,7 @@ const Dashboard = () => {
                     Dashboard Highlights
                   </p>
                   <div className="mt-4 grid gap-3">
-                    {roleHighlights[role].map((item, index) => {
+                    {(roleHighlights[role] || []).map((item, index) => {
                       const icons = [UsersRound, BellRing, FileSpreadsheet, CircleGauge, ShieldCheck];
                       const Icon = icons[index % icons.length];
                       return (
