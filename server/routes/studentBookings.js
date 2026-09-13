@@ -104,7 +104,7 @@ function validateRequired(payload) {
   return requiredFields.filter((field) => !payload[field]);
 }
 
-router.get("/", async (_req, res) => {
+router.get("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN), async (_req, res) => {
   try {
     const bookings = await StudentBooking.find().sort({ createdAt: -1 }).lean();
     return res.status(200).json(bookings);
@@ -113,7 +113,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN), async (req, res) => {
+router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN, ROLES.FINANCE_ADMIN), async (req, res) => {
   const maxCreateAttempts = 5;
 
   for (let attempt = 1; attempt <= maxCreateAttempts; attempt += 1) {
@@ -169,7 +169,7 @@ router.patch(
   "/:id/status",
   verifyToken,
   attachCurrentUser,
-  requireRole(ROLES.SUPER_ADMIN),
+  requireRole(ROLES.SUPER_ADMIN, ROLES.FINANCE_ADMIN),
   async (req, res) => {
   try {
     const status = String(req.body.status || "").trim();
@@ -201,7 +201,7 @@ router.patch(
   "/:id/disabled",
   verifyToken,
   attachCurrentUser,
-  requireRole(ROLES.SUPER_ADMIN),
+  requireRole(ROLES.SUPER_ADMIN, ROLES.FINANCE_ADMIN),
   async (req, res) => {
     try {
       const booking = await StudentBooking.findOneAndUpdate(
@@ -228,7 +228,7 @@ router.delete(
   "/:id",
   verifyToken,
   attachCurrentUser,
-  requireRole(ROLES.SUPER_ADMIN),
+  requireRole(ROLES.SUPER_ADMIN, ROLES.FINANCE_ADMIN),
   async (req, res) => {
     try {
       const booking = await StudentBooking.findOneAndDelete({ id: req.params.id }).lean();

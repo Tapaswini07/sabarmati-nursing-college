@@ -588,7 +588,7 @@ function downloadReportPdf(bookings, summary, courseReport) {
 
 export default function StudentBooking() {
   const currentUser = getStoredUser();
-  const canManageBookings = String(currentUser?.role || "").toLowerCase() === "super_admin";
+  const canManageBookings = ["super_admin", "finance_admin"].includes(normalizeRole(currentUser?.role));
   const [bookings, setBookings] = useState([]);
   const [formData, setFormData] = useState(initialForm);
   const [searchTerm, setSearchTerm] = useState("");

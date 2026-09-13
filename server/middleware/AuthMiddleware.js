@@ -2,8 +2,17 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { ROLES } from "../constants/roles.js";
 
-function normalizeRole(role) {
-  return String(role || "").trim().toLowerCase();
+export function normalizeRole(role) {
+  return String(role || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[\s\-_]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_+/g, "_");
+}
+
+function getRequestRole(req) {
+  return normalizeRole(req.currentUser?.role || req.user?.role);
 }
 
 // Verifies JWT — attach decoded payload to req.user
@@ -27,7 +36,7 @@ export const verifyToken = (req, res, next) => {
 // Allow only specific roles — use AFTER verifyToken
 // Usage: router.get("/admin-only", verifyToken, requireRole("admin"), handler)
 export const requireRole = (...roles) => (req, res, next) => {
-  const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
+  const resolvedRole = getRequestRole(req);
   const allowedRoles = roles.map(normalizeRole);
 
   if (!allowedRoles.includes(resolvedRole))
@@ -50,7 +59,7 @@ export const attachCurrentUser = async (req, res, next) => {
 };
 
 export const requireAdminOrSuperAdmin = (req, res, next) => {
-  const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
+  const resolvedRole = getRequestRole(req);
 
   if (![ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole)) {
     return res.status(403).json({ message: "Access denied: insufficient role" });
@@ -68,7 +77,7 @@ export const requireAdminOrSuperAdmin = (req, res, next) => {
 
 // Academic routes: Super Admin & Admin can manage, Finance Admin has read-only access.
 export const requireAcademicAccess = (req, res, next) => {
-  const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
+  const resolvedRole = getRequestRole(req);
 
   if (![ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole)) {
     return res.status(403).json({ message: "Access denied: insufficient role" });
@@ -83,7 +92,7 @@ export const requireAcademicAccess = (req, res, next) => {
 
 // Finance Admins can manage finance data, while Academic Admins have read-only access.
 export const requireFinanceAccess = (req, res, next) => {
-  const resolvedRole = normalizeRole(req.currentUser?.role || req.user?.role);
+  const resolvedRole = getRequestRole(req);
 
   if (![ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN].includes(resolvedRole)) {
     return res.status(403).json({ message: "Access denied: insufficient role" });

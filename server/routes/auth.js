@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import { attachCurrentUser, verifyToken } from "../middleware/AuthMiddleware.js";
+import { attachCurrentUser, normalizeRole, verifyToken } from "../middleware/AuthMiddleware.js";
 import { ROLE_LABELS, ROLES } from "../constants/roles.js";
 import { resolveLinkedStudent } from "../utils/studentLinking.js";
 
@@ -18,24 +18,29 @@ function upperIdentifier(value = "") {
 }
 
 function buildUserResponse(user) {
+  const normalizedRole = normalizeRole(user.role);
+
   return {
     id: user._id,
     name: user.name || "",
     email: user.email,
     userId: user.userId || "",
-    role: user.role,
-    roleLabel: ROLE_LABELS[user.role] || user.role,
+    role: normalizedRole,
+    roleLabel: ROLE_LABELS[normalizedRole] || user.role,
     linkedStudentId: user.linkedStudentId || null,
   };
 }
 
 function canCurrentUserManageRole(currentRole, targetRole) {
-  if (currentRole === ROLES.SUPER_ADMIN) {
-    return [ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(targetRole);
+  const safeCurrentRole = normalizeRole(currentRole);
+  const safeTargetRole = normalizeRole(targetRole);
+
+  if (safeCurrentRole === ROLES.SUPER_ADMIN) {
+    return [ROLES.ADMIN, ROLES.FINANCE_ADMIN, ROLES.STUDENT].includes(safeTargetRole);
   }
 
-  if (currentRole === ROLES.ADMIN) {
-    return targetRole === ROLES.STUDENT;
+  if (safeCurrentRole === ROLES.ADMIN) {
+    return safeTargetRole === ROLES.STUDENT;
   }
 
   return false;
@@ -84,7 +89,8 @@ router.get("/me", verifyToken, attachCurrentUser, async (req, res) => {
 });
 
 router.post("/register", verifyToken, attachCurrentUser, async (req, res) => {
-  const { name, email, password, role, userId, studentId, registrationNo } = req.body;
+  const { name, email, password, userId, studentId, registrationNo } = req.body;
+  const role = normalizeRole(req.body.role);
 
   if (!name || !email || !password || !role || !userId) {
     return res.status(400).json({
@@ -193,7 +199,7 @@ router.patch("/users/:id", verifyToken, attachCurrentUser, async (req, res) => {
     const nextEmail = req.body.email?.trim().toLowerCase();
     const nextUserId = req.body.userId?.trim().toUpperCase();
     const nextPassword = req.body.password;
-    const nextRole = req.body.role?.trim();
+    const nextRole = normalizeRole(req.body.role);
     const nextStudentId = req.body.studentId?.trim();
     const nextRegistrationNo = req.body.registrationNo?.trim();
 

@@ -18,7 +18,9 @@ export function normalizeRole(role) {
   return String(role || "")
     .trim()
     .toLowerCase()
-    .replace(/[\s-]+/g, "_");
+    .replace(/[\s\-_]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .replace(/_+/g, "_");
 }
 
 const MODULE_RULES = {

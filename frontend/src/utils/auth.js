@@ -1,4 +1,4 @@
-import { getDefaultRouteForRole } from "./permissions";
+import { normalizeRole } from "./permissions";
 
 export function getStoredUser() {
   const rawUser = localStorage.getItem("user");
@@ -7,7 +7,15 @@ export function getStoredUser() {
   }
 
   try {
-    return JSON.parse(rawUser);
+    const parsedUser = JSON.parse(rawUser);
+    if (!parsedUser || typeof parsedUser !== "object") {
+      return null;
+    }
+
+    return {
+      ...parsedUser,
+      role: normalizeRole(parsedUser.role),
+    };
   } catch {
     return null;
   }
