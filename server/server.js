@@ -28,19 +28,34 @@ import { syncStudentBookingIndexes } from "./utils/syncStudentBookingIndexes.js"
 
 const app = express();
 
+const configuredOrigins = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 const allowedOrigins = [
-  ...(process.env.FRONTEND_URL || "").split(",").map((origin) => origin.trim()),
+  ...configuredOrigins,
   "https://sabarmati-nursing-college-859o.vercel.app",
-].filter(Boolean);
+  "https://sabarmati-nursing-college-859o-j6jodx5l0-sabarmati-project.vercel.app",
+  "https://sabarmati-nursing-college-859o-j6jodx5l0-sabarmati-project-git-main-sabarmati-project.vercel.app",
+];
 
 function isAllowedOrigin(origin) {
-  if (!origin || allowedOrigins.includes(origin)) {
+  if (!origin) {
+    return true;
+  }
+
+  if (allowedOrigins.includes(origin)) {
     return true;
   }
 
   try {
     const { hostname } = new URL(origin);
-    return hostname === "localhost" || hostname === "127.0.0.1";
+    return (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname.endsWith(".vercel.app")
+    );
   } catch {
     return false;
   }
@@ -49,12 +64,16 @@ function isAllowedOrigin(origin) {
 app.use(cors({
   origin(origin, callback) {
     if (isAllowedOrigin(origin)) {
-      return callback(null, true);
+      return callback(null, origin || true);
     }
 
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
+    return callback(null, false);
   },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-requested-with"],
 }));
+app.options("*", cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use("/uploads", express.static("uploads"));
