@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import Logo from "../assets/Logo.png";
@@ -482,6 +483,15 @@ const Sidebar = () => {
         <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
           onClick={closeSidebar}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              closeSidebar();
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close sidebar"
         />
 
       )}
