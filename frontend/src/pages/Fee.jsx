@@ -977,6 +977,8 @@ const Fee = () => {
   const [customFeeHeads, setCustomFeeHeads] = useState(() =>
     STUDENT_CUSTOM_FEE_HEADS.map((item) => ({ ...item }))
   );
+  const [scholarshipMode, setScholarshipMode] = useState("percentage");
+  const [scholarshipValue, setScholarshipValue] = useState("20");
   const [editingReceipt, setEditingReceipt] = useState(null);
   const [receiptSaving, setReceiptSaving] = useState(false);
   const [receiptForm, setReceiptForm] = useState({
@@ -1183,10 +1185,12 @@ const Fee = () => {
   const customFeeTotal = customFeeHeads
     .filter((item) => !item.isBreakdown)
     .reduce((sum, item) => sum + item.amount, 0);
-  const scholarshipAmount = Math.round(
-    customFeeHeads.filter((item) =>
-      ["Course Fee"].includes(item.name)
-    ).reduce((sum, item) => sum + item.amount, 0) * 0.2
+  const scholarshipInput = Math.max(Number(scholarshipValue) || 0, 0);
+  const scholarshipAmount = Math.min(
+    customFeeTotal,
+    scholarshipMode === "percentage"
+      ? Math.round((customFeeTotal * Math.min(scholarshipInput, 100)) / 100)
+      : scholarshipInput
   );
   const customDiscount = 0;
   const customFine = 0;
@@ -3990,10 +3994,10 @@ const Fee = () => {
                               <p className="font-bold text-slate-900">Scholarship</p>
                               <div className="mt-3 grid gap-3">
                                 <div className="flex gap-4 text-sm font-semibold text-slate-700">
-                                  <label className="inline-flex items-center gap-2"><input type="radio" defaultChecked /> Percentage</label>
-                                  <label className="inline-flex items-center gap-2"><input type="radio" /> Fixed</label>
+                                  <label className="inline-flex items-center gap-2"><input type="radio" name="scholarship-mode" checked={scholarshipMode === "percentage"} onChange={() => setScholarshipMode("percentage")} /> Percentage</label>
+                                  <label className="inline-flex items-center gap-2"><input type="radio" name="scholarship-mode" checked={scholarshipMode === "fixed"} onChange={() => setScholarshipMode("fixed")} /> Fixed</label>
                                 </div>
-                                <input defaultValue="20" className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
+                                <input type="number" min="0" max={scholarshipMode === "percentage" ? 100 : customFeeTotal} value={scholarshipValue} onChange={(event) => setScholarshipValue(event.target.value)} className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold" />
                                 <div className="grid gap-2 text-sm font-semibold text-slate-700">
                                   <label className="inline-flex items-center gap-2"><input type="checkbox" defaultChecked /> Tuition Fee</label>
                                   <label className="inline-flex items-center gap-2"><input type="checkbox" defaultChecked /> Exam Fee</label>
