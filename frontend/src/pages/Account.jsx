@@ -700,7 +700,7 @@ const Account = () => {
                 <div className="grid gap-4 sm:grid-cols-3">
                   <div className="rounded-[24px] border border-slate-200 bg-white p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Audit Logs</p>
-                    <p className="mt-2 text-2xl font-bold text-slate-900">2,486</p>
+                    <p className="mt-2 text-2xl font-bold text-slate-900">0</p>
                   </div>
                   <div className="rounded-[24px] border border-slate-200 bg-white p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Branches</p>
