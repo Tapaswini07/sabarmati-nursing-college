@@ -3,6 +3,7 @@ import { jsPDF } from "jspdf";
 import { apiRequest } from "../config/api";
 import { printMoneyReceipt } from "../utils/receiptPdf";
 import { getStoredUser } from "../utils/auth";
+import { normalizeRole } from "../utils/permissions";
 import {
   BadgeIndianRupee,
   Ban,
