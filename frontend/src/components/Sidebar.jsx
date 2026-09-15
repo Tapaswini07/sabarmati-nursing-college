@@ -130,15 +130,17 @@ const Sidebar = () => {
             ]
           : []),
 
-        // Student Booking (NOC): full access for Finance Admin, view-only for Admin.
-        ...(role === "finance_admin" || role === "admin"
-          ? {
-              to: "/dashboard/academichub/noc",
+        // Student Booking (NOC): visible for Super Admin, Finance Admin, and Admin.
+        ...(role === "super_admin" || role === "finance_admin" || role === "admin"
+          ? [
+              {
+                to: "/dashboard/academichub/noc",
 
-              label: "Student Booking",
+                label: "Student Booking",
 
-              icon: FileSignature,
-            }
+                icon: FileSignature,
+              },
+            ]
           : []),
 
         // Admin Management is ONLY for Super Admin.
