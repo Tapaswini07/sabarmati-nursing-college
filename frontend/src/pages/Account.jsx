@@ -65,71 +65,9 @@ const quickStats = [
   },
 ];
 
-const entryRows = [
-  {
-    date: "17 May 2026",
-    voucher: "JV-2026-0517-014",
-    category: "Tuition Collection",
-    ledger: "Student Ledger / Nursing Year 1",
-    debit: 0,
-    credit: 0,
-    status: "Posted",
-  },
-  {
-    date: "17 May 2026",
-    voucher: "CP-2026-0517-008",
-    category: "Vendor Payment",
-    ledger: "Vendor Ledger / Medisupply",
-    debit: 0,
-    credit: 0,
-    status: "Approved",
-  },
-  {
-    date: "16 May 2026",
-    voucher: "BR-2026-0516-006",
-    category: "Bank Reconciliation",
-    ledger: "HDFC Current Account",
-    debit: 0,
-    credit: 0,
-    status: "Matched",
-  },
-  {
-    date: "16 May 2026",
-    voucher: "CB-2026-0516-010",
-    category: "Cash Expense",
-    ledger: "Department Ledger / Hostel",
-    debit: 0,
-    credit: 0,
-    status: "Under Review",
-  },
-];
+const entryRows = [];
 
-const journalQueue = [
-  {
-    title: "Monthly salary provision",
-    voucher: "JV-2026-0520-001",
-    owner: "Accounts Office",
-    workflow: "Maker -> Reviewer -> Finance Controller",
-    amount: 0,
-    status: "Pending Approval",
-  },
-  {
-    title: "Library asset capitalization",
-    voucher: "JV-2026-0518-004",
-    owner: "Admin Branch",
-    workflow: "Maker -> Auto Post",
-    amount: 0,
-    status: "Auto Posted",
-  },
-  {
-    title: "Vendor TDS adjustment",
-    voucher: "JV-2026-0517-009",
-    owner: "Purchase Desk",
-    workflow: "Maker -> Reviewer",
-    amount: 0,
-    status: "Edited",
-  },
-];
+const journalQueue = [];
 
 const ledgerCards = [
   {
