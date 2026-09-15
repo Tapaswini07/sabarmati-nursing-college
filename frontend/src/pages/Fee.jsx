@@ -2062,6 +2062,47 @@ const Fee = () => {
     setEditingFeeHead(null);
     setEditFeeAmount("");
   };
+  
+  const handleSaveStudentCustomization = async () => {
+    if (!student) {
+      setError("Select a student before saving fee customization.");
+      return;
+    }
+
+    const grossFee = customFeeTotal;
+    const scholarship = scholarshipAmount;
+    const netFee = Math.max(grossFee - scholarship, 0);
+    const paidAmount = Number(student.paidAmount || 0);
+    const pendingAmount = Math.max(netFee - paidAmount, 0);
+    const updatedStudent = {
+      ...student,
+      scholarshipAmount: scholarship,
+      totalFee: netFee,
+      pendingAmount,
+      outstandingAmount: pendingAmount,
+      outstandingStatus: pendingAmount <= 0 ? "Cleared" : "Pending",
+    };
+
+    setStudent(updatedStudent);
+    setStudents((current) =>
+      current.map((item) =>
+        item.registrationNo === student.registrationNo ? updatedStudent : item
+      )
+    );
+
+    try {
+      await apiRequest(`/api/students/${student._id}/fees/config`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          baseFee: grossFee,
+          scholarshipAmount: scholarship,
+        }),
+      });
+      setSuccess(`Scholarship of ${formatCurrency(scholarship)} deducted successfully.`);
+    } catch (saveError) {
+      setError(saveError.message || "Unable to save scholarship deduction.");
+    }
+  };
 
   const handleClearStudentFeeData = async () => {
     if (!canManageFinance || !student?._id) {
@@ -3983,7 +4024,7 @@ const Fee = () => {
                               <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">Net Payable</p>
                               <p className="mt-2 text-3xl font-black text-emerald-950">{formatCurrency(customNetPayable)}</p>
                             </div>
-                            <button type="button" className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white">
+                            <button type="button" onClick={handleSaveStudentCustomization} className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white">
                               Save Changes
                             </button>
                           </div>

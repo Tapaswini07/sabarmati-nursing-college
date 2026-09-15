@@ -772,10 +772,11 @@ router.patch("/:id/fees/config", verifyToken, attachCurrentUser, requireFinanceA
     if (!student) return res.status(404).json({ message: "Student not found" });
     applyStoredFees(student, await loadStoredFees(student));
 
-    const { feePlan, baseFee, nextDueDate, feeStructure, extraCharges, examFees, discounts, fineRules } = req.body;
+    const { feePlan, baseFee, nextDueDate, feeStructure, extraCharges, examFees, discounts, fineRules, scholarshipAmount } = req.body;
     if (typeof feePlan === "string" && feePlan.trim()) student.feePlan = feePlan.trim();
     if (baseFee != null) student.baseFee = Math.max(toNumber(baseFee), 0);
     if (typeof nextDueDate === "string") student.nextDueDate = nextDueDate.trim();
+    if (scholarshipAmount != null) student.scholarshipAmount = Math.max(toNumber(scholarshipAmount), 0);
     if (Array.isArray(feeStructure)) student.feeStructure = feeStructure.map((item) => normalizeCharge(item, { scope: "Structure", category: "Tuition" }));
     if (Array.isArray(extraCharges)) student.extraCharges = extraCharges.map((item) => normalizeCharge(item, { scope: "Additional", category: "Additional" }));
     if (Array.isArray(examFees)) student.examFees = examFees.map((item) => normalizeCharge(item, { scope: "Exam", category: "Exam Fee" }));
