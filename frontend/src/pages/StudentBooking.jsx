@@ -303,13 +303,10 @@ async function _unusedLegacyPrintReceipt(booking) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(25);
   doc.text(profile.name.toUpperCase(), 145, 19, { align: "center" });
-  doc.setFontSize(11);
-  doc.setFont("helvetica", "normal");
-  doc.text(profile.affiliation, 145, 29, { align: "center" });
-  doc.text(profile.affiliationSecondLine, 145, 36, { align: "center" });
   doc.setFontSize(10);
-  doc.text(profile.address, 145, 47, { align: "center" });
-  doc.text(`${profile.phone}   |   ${profile.email}`, 145, 56, { align: "center" });
+  doc.setFont("helvetica", "normal");
+  doc.text(profile.address, 145, 35, { align: "center" });
+  doc.text(`${profile.phone}   |   ${profile.email}`, 145, 44, { align: "center" });
 
   doc.setDrawColor(...navy);
   doc.setLineWidth(0.6);

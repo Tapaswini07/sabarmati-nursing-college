@@ -41,15 +41,21 @@ export function getNetworkErrorMessage(error) {
 export async function apiRequest(path, options = {}) {
   try {
     const isFormDataBody = typeof FormData !== "undefined" && options.body instanceof FormData;
+    const method = String(options.method || "GET").toUpperCase();
     const token = localStorage.getItem("token");
+    const requestHeaders = {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    };
+
+    if (!isFormDataBody && !requestHeaders["Content-Type"] && method !== "GET" && method !== "HEAD") {
+      requestHeaders["Content-Type"] = "application/json";
+    }
 
     const response = await fetch(buildUrl(path), {
       ...options,
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...(options.headers || {}),
-        ...(isFormDataBody ? {} : { "Content-Type": "application/json" }),
-      },
+      method,
+      headers: requestHeaders,
     });
 
     const contentType = response.headers.get("content-type") || "";

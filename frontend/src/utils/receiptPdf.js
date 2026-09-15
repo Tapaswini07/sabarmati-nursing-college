@@ -194,7 +194,7 @@ async function createMoneyReceiptSheet({ payment = {}, student = {} }) {
     doc.setFillColor(...navy); rect(0, 0, 297, 5, "F"); rect(0, 195, 297, 15, "F");
     doc.setDrawColor(...navy); doc.setLineWidth(length(0.7)); rect(4, 4, 289, 202);
     doc.setDrawColor(...lightBorder); doc.setLineWidth(length(0.2)); doc.setTextColor(...navy); doc.setFont("helvetica", "bold"); size(25); text(profile.name.toUpperCase(), 145, 19, { align: "center" });
-    size(11); doc.setFont("helvetica", "normal"); text(profile.affiliation, 145, 29, { align: "center" }); text(profile.affiliationSecondLine, 145, 36, { align: "center" }); size(10); text(profile.address, 145, 47, { align: "center" }); text(`${profile.phone}   |   ${profile.email}`, 145, 56, { align: "center" });
+    size(10); doc.setFont("helvetica", "normal"); text(profile.address, 145, 35, { align: "center" }); text(`${profile.phone}   |   ${profile.email}`, 145, 44, { align: "center" });
     doc.setDrawColor(...navy); doc.setLineWidth(length(0.6));
     if (logo) doc.addImage(logo, "PNG", x(profile.logoBox.x), y(profile.logoBox.y), length(profile.logoBox.width), length(profile.logoBox.height));
     else { doc.circle(x(37), y(30), length(17)); doc.setFont("helvetica", "bold"); size(11); text(profile.prefix, 37, 32, { align: "center" }); }
