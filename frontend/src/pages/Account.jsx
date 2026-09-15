@@ -281,8 +281,8 @@ const Account = () => {
     return {
       debitTotal,
       creditTotal,
-      dailyEntries: entryRows.length,
-      openApprovals: journalQueue.filter((item) => item.status !== "Auto Posted").length,
+      dailyEntries: 0,
+      openApprovals: 0,
     };
   }, []);
 
@@ -375,10 +375,6 @@ const Account = () => {
                         requiring attention.
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1.5 text-sm font-semibold text-emerald-700">
-                      Healthy
-                      <CheckCircle2 size={16} />
-                    </span>
                   </div>
                 </div>
 
