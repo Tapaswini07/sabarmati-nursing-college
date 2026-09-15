@@ -142,10 +142,10 @@ function getReceiptProfile(institution = "") {
     typeLabel: isSchool ? "School Booking Receipt" : "College Booking Receipt",
     affiliation: isSchool
       ? "Recognized by Indian Nursing Council & Odisha Nurses Registration Council"
-      : "Recognized by Odisha Nurses Registration Council &",
+      : "",
     affiliationSecondLine: isSchool
       ? "Affiliated to Odisha Nurses and Midwives Examination Board"
-      : "Affiliated to Odisha University of Health Sciences, Bhubaneswar",
+      : "",
     logoPath: isSchool ? "/school-receipt-logo.png" : "/college-receipt-logo.png",
     logoCrop: null,
     logoBox: isSchool
@@ -303,10 +303,13 @@ async function _unusedLegacyPrintReceipt(booking) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(25);
   doc.text(profile.name.toUpperCase(), 145, 19, { align: "center" });
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  doc.text(profile.address, 145, 35, { align: "center" });
-  doc.text(`${profile.phone}   |   ${profile.email}`, 145, 44, { align: "center" });
+  if (profile.affiliation) doc.text(profile.affiliation, 145, 29, { align: "center" });
+  if (profile.affiliationSecondLine) doc.text(profile.affiliationSecondLine, 145, 36, { align: "center" });
+  doc.setFontSize(10);
+  doc.text(profile.address, 145, 47, { align: "center" });
+  doc.text(`${profile.phone}   |   ${profile.email}`, 145, 56, { align: "center" });
 
   doc.setDrawColor(...navy);
   doc.setLineWidth(0.6);
