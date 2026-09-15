@@ -29,38 +29,38 @@ const currencyFormatter = new Intl.NumberFormat("en-IN", {
 const quickStats = [
   {
     title: "Total Income",
-    value: 2845000,
-    change: "+12.4%",
+    value: 0,
+    change: "0%",
     tone: "text-emerald-300",
   },
   {
     title: "Total Expenses",
-    value: 1760000,
-    change: "+5.1%",
+    value: 0,
+    change: "0%",
     tone: "text-amber-300",
   },
   {
     title: "Cash in Hand",
-    value: 248000,
-    change: "Closing matched",
+    value: 0,
+    change: "0",
     tone: "text-cyan-300",
   },
   {
     title: "Bank Balance",
-    value: 968000,
-    change: "4 banks synced",
+    value: 0,
+    change: "0 banks synced",
     tone: "text-sky-300",
   },
   {
     title: "Pending Payments",
-    value: 362000,
-    change: "18 approvals pending",
+    value: 0,
+    change: "0 approvals pending",
     tone: "text-rose-300",
   },
   {
     title: "GST & TDS",
-    value: 194000,
-    change: "Filed through Apr 2026",
+    value: 0,
+    change: "0",
     tone: "text-violet-300",
   },
 ];
@@ -72,7 +72,7 @@ const entryRows = [
     category: "Tuition Collection",
     ledger: "Student Ledger / Nursing Year 1",
     debit: 0,
-    credit: 125000,
+    credit: 0,
     status: "Posted",
   },
   {
@@ -80,7 +80,7 @@ const entryRows = [
     voucher: "CP-2026-0517-008",
     category: "Vendor Payment",
     ledger: "Vendor Ledger / Medisupply",
-    debit: 46500,
+    debit: 0,
     credit: 0,
     status: "Approved",
   },
@@ -90,7 +90,7 @@ const entryRows = [
     category: "Bank Reconciliation",
     ledger: "HDFC Current Account",
     debit: 0,
-    credit: 87500,
+    credit: 0,
     status: "Matched",
   },
   {
@@ -98,7 +98,7 @@ const entryRows = [
     voucher: "CB-2026-0516-010",
     category: "Cash Expense",
     ledger: "Department Ledger / Hostel",
-    debit: 12800,
+    debit: 0,
     credit: 0,
     status: "Under Review",
   },
@@ -110,7 +110,7 @@ const journalQueue = [
     voucher: "JV-2026-0520-001",
     owner: "Accounts Office",
     workflow: "Maker -> Reviewer -> Finance Controller",
-    amount: 685000,
+    amount: 0,
     status: "Pending Approval",
   },
   {
@@ -118,7 +118,7 @@ const journalQueue = [
     voucher: "JV-2026-0518-004",
     owner: "Admin Branch",
     workflow: "Maker -> Auto Post",
-    amount: 214000,
+    amount: 0,
     status: "Auto Posted",
   },
   {
@@ -126,7 +126,7 @@ const journalQueue = [
     voucher: "JV-2026-0517-009",
     owner: "Purchase Desk",
     workflow: "Maker -> Reviewer",
-    amount: 34200,
+    amount: 0,
     status: "Edited",
   },
 ];
@@ -135,25 +135,25 @@ const ledgerCards = [
   {
     title: "Student Ledger",
     subtitle: "Admission fees, dues, refunds, scholarships",
-    balance: 1265000,
+    balance: 0,
     tone: "from-sky-500 to-blue-700",
   },
   {
     title: "Vendor Ledger",
     subtitle: "Purchases, settlement cycles, tax deductions",
-    balance: 482000,
+    balance: 0,
     tone: "from-emerald-500 to-teal-700",
   },
   {
     title: "Staff Ledger",
     subtitle: "Payroll, reimbursements, advances",
-    balance: 734000,
+    balance: 0,
     tone: "from-amber-500 to-orange-700",
   },
   {
     title: "Department Ledger",
     subtitle: "Branch-wise budgets and utilization",
-    balance: 548000,
+    balance: 0,
     tone: "from-fuchsia-500 to-rose-700",
   },
 ];
@@ -162,26 +162,26 @@ const financialReports = [
   {
     name: "Trial Balance",
     summary: "Debit and credit summary with FY filter and export support",
-    primary: "Debits 24.8L",
-    secondary: "Credits 24.8L",
+    primary: "Debits 0",
+    secondary: "Credits 0",
   },
   {
     name: "Balance Sheet",
     summary: "Assets, liabilities, reserves, and year-wise comparison",
-    primary: "Assets 42.4L",
-    secondary: "Liabilities 18.2L",
+    primary: "Assets 0",
+    secondary: "Liabilities 0",
   },
   {
     name: "Income & Expenditure",
     summary: "Monthly and annual operating position by department",
-    primary: "Surplus 10.9L",
-    secondary: "Expense ratio 61.8%",
+    primary: "Surplus 0",
+    secondary: "Expense ratio 0%",
   },
   {
     name: "Receipt & Payment",
     summary: "Cash and bank movement across daily to yearly views",
-    primary: "Receipts 31.6L",
-    secondary: "Payments 20.7L",
+    primary: "Receipts 0",
+    secondary: "Payments 0",
   },
 ];
 
@@ -189,7 +189,7 @@ const operations = [
   {
     title: "Bank Reconciliation Statement",
     desc: "Statement matching, pending cheques, mismatch verification workflow",
-    metric: "14 pending items",
+    metric: "0 pending items",
     icon: ScanSearch,
   },
   {
@@ -201,19 +201,19 @@ const operations = [
   {
     title: "Bank Transactions",
     desc: "Multi-bank deposits, withdrawals, and account monitoring",
-    metric: "4 linked bank accounts",
+    metric: "0 linked bank accounts",
     icon: Landmark,
   },
   {
     title: "UPI Tracking",
     desc: "Payment verification, QR collection, status monitoring",
-    metric: "182 UPI transactions",
+    metric: "0 UPI transactions",
     icon: CircleDollarSign,
   },
   {
     title: "Cheque Tracking",
     desc: "Issue, receive, clearance status, and reminder controls",
-    metric: "9 cheques awaiting clearance",
+    metric: "0 cheques awaiting clearance",
     icon: ReceiptText,
   },
   {
