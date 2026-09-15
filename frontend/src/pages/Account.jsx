@@ -170,23 +170,7 @@ const adminControls = [
   "Multi-branch accounting with centralized analytics and ledger isolation",
 ];
 
-const auditItems = [
-  {
-    action: "Daily entry posted",
-    note: "Tuition collection voucher auto-mapped to student ledger",
-    time: "17 May 2026, 10:42 AM",
-  },
-  {
-    action: "BRS mismatch flagged",
-    note: "Cheque #002481 still pending in ICICI statement import",
-    time: "17 May 2026, 09:18 AM",
-  },
-  {
-    action: "TDS payment approved",
-    note: "Vendor deduction batch released by Finance Controller",
-    time: "16 May 2026, 06:15 PM",
-  },
-];
+const auditItems = [];
 
 const financeYears = ["FY 2026-27", "FY 2025-26", "FY 2024-25"];
 const branches = ["Central Campus", "North Branch", "Skill Center"];
