@@ -1093,13 +1093,13 @@ router.post("/admission", admissionUpload, async (req, res) => {
     const casteCertificateFile = files.casteCertificate?.[0] || null;
     const supportingDocuments = Array.isArray(files.supportingDocuments) ? files.supportingDocuments : [];
     const supportingDocumentLabels = parseSupportingDocumentLabels(req.body.supportingDocumentLabels);
-    const studentName = trimValue(req.body.studentName);
+    const studentName = trimValue(req.body.studentName) || "Not provided";
     const email = trimValue(req.body.email);
     const phone = trimValue(req.body.phone);
     const address = trimValue(req.body.address);
     const dob = trimValue(req.body.dob);
     const gender = trimValue(req.body.gender);
-    const course = trimValue(req.body.course);
+    const course = trimValue(req.body.course) || "Not specified";
     const selectedAdmissionYear = trimValue(req.body.admissionYear);
     const selectedAcademicYear = buildAcademicYearFromStartYear(selectedAdmissionYear);
     const mScSpecialization = trimValue(req.body.mScSpecialization);
@@ -1107,25 +1107,8 @@ router.post("/admission", admissionUpload, async (req, res) => {
     const admissionDetailFields = getAdmissionDetailFields(req.body);
     const academicYear = selectedAcademicYear || trimValue(req.body.year) || getAcademicYear();
     const department = trimValue(req.body.department) || inferDepartmentFromCourse(course);
-    const requiresCasteCertificate = ["OBC", "SC", "ST", "EWS"].includes(casteCategory);
-    const requiresMScSpecialization = [
-      "M.Sc Nursing",
-      "MSC(N)After P.B.BSc(N)",
-      "MSC(N)After B.Sc(N)",
-    ].includes(course);
-
-    if (!studentName || !email || !phone || !address || !dob || !gender || !course || !academicYear) {
-      return res.status(400).json({ message: "Please complete all required admission fields" });
-    }
     if (!isValidAcademicYear(academicYear)) {
       return res.status(400).json({ message: "Admission year must be between 2020-2021 and 2030-2031." });
-    }
-    if (requiresMScSpecialization && !mScSpecialization) {
-      return res.status(400).json({ message: "Please select an M.Sc (N) specialization." });
-    }
-    if (!photoFile) return res.status(400).json({ message: "Student photo is required" });
-    if (requiresCasteCertificate && !casteCertificateFile) {
-      return res.status(400).json({ message: "Please upload the caste certificate for the selected category." });
     }
 
     const applicationId = await createYearWiseApplicationId(academicYear);

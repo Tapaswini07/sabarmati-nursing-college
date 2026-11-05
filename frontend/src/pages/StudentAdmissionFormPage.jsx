@@ -1196,9 +1196,6 @@ function StudentAdmissionFormPage() {
     setSuccessRecord(null);
 
     try {
-      if (requiresCasteCertificate && !casteCertificateFile) {
-        throw new Error("Please upload the caste certificate for the selected category.");
-      }
       const payload = new FormData();
       const normalizedFormData = applyAcademicPercentages({ ...formData });
       const payloadData = {
@@ -1457,13 +1454,13 @@ function StudentAdmissionFormPage() {
                   </span>
                   <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-amber-700">
-                      Required Documents To Be Uploaded
+                      Documents To Be Uploaded
                     </p>
                     <h3 className="mt-2 text-xl font-black text-slate-900">
                       {formData.course || "Selected course"} document checklist
                     </h3>
                     <p className="mt-2 text-sm leading-6 text-slate-600">
-                      Each required document now has its own upload option below. Upload the caste certificate when required by category, and complete every relevant document slot for the selected course.
+                      Each document has its own optional upload slot below. Upload whichever documents are available for the application.
                     </p>
 
                     <div className="mt-4 grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
@@ -1560,7 +1557,6 @@ function StudentAdmissionFormPage() {
                         value={formData.institutionId}
                         onChange={handleChange}
                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                        required
                       >
                         <option value="">Select institution</option>
                         {INSTITUTIONS.map((inst) => (
@@ -1582,7 +1578,6 @@ function StudentAdmissionFormPage() {
                         onChange={handleChange}
                         disabled={!formData.institutionId}
                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 disabled:opacity-60"
-                        required
                       >
                         <option value="">Select course</option>
                         {availableCourses.map((course) => (
@@ -1603,7 +1598,6 @@ function StudentAdmissionFormPage() {
                         value={formData.admissionYear}
                         onChange={handleChange}
                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                        required
                       >
                         <option value="">Select admission year</option>
                         {admissionYearSingleOptions.map((year) => (
@@ -1614,7 +1608,7 @@ function StudentAdmissionFormPage() {
                       </select>
                     </label>
 
-                    {renderField({ name: "admissionDate", label: "Admission Date", icon: <CalendarDays size={16} className="text-blue-700" />, type: "date", required: true })}
+                    {renderField({ name: "admissionDate", label: "Admission Date", icon: <CalendarDays size={16} className="text-blue-700" />, type: "date" })}
 
                     <label className="rounded-[26px] border border-slate-200 bg-slate-50 p-4 shadow-sm transition hover:border-blue-200 hover:bg-white">
                       <span className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
@@ -1627,7 +1621,6 @@ function StudentAdmissionFormPage() {
                         onChange={handleChange}
                         disabled={!formData.courseId || !formData.admissionYear}
                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 disabled:opacity-60"
-                        required
                       >
                         <option value="">Auto-generated based on course</option>
                         {admissionBatches.map((batch) => (
@@ -1649,7 +1642,6 @@ function StudentAdmissionFormPage() {
                         onChange={handleChange}
                         disabled={!formData.course}
                         className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 disabled:opacity-60"
-                        required
                       >
                         <option value="">Select study year</option>
                         {availableStudyYears.map((year) => (
@@ -1678,19 +1670,19 @@ function StudentAdmissionFormPage() {
                   </div>
 
                   <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                    {renderField({ name: "studentName", label: "Student Full Name", placeholder: "Enter student full name", required: true })}
-                    {renderSelect({ name: "gender", label: "Gender", options: ["Male", "Female", "Other"], placeholder: "Select gender", required: true })}
-                    {renderField({ name: "dob", label: "Date of Birth", type: "date", required: true })}
+                    {renderField({ name: "studentName", label: "Student Full Name", placeholder: "Enter student full name" })}
+                    {renderSelect({ name: "gender", label: "Gender", options: ["Male", "Female", "Other"], placeholder: "Select gender" })}
+                    {renderField({ name: "dob", label: "Date of Birth", type: "date" })}
                     {renderField({ name: "age", label: "Age (Auto Calculate)", placeholder: "Auto calculated", disabled: true })}
                     {renderSelect({ name: "bloodGroup", label: "Blood Group", options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], placeholder: "Select blood group" })}
                     {renderField({ name: "aadhaarNumber", label: "Aadhaar Number", placeholder: "Enter Aadhaar number" })}
-                    {renderField({ name: "phone", label: "Mobile Number", icon: <Phone size={16} className="text-blue-700" />, placeholder: "Enter mobile number", required: true })}
+                    {renderField({ name: "phone", label: "Mobile Number", icon: <Phone size={16} className="text-blue-700" />, placeholder: "Enter mobile number" })}
                     {renderField({ name: "whatsappNumber", label: "WhatsApp Number", icon: <Phone size={16} className="text-blue-700" />, placeholder: "Enter WhatsApp number" })}
-                    {renderField({ name: "email", label: "Email Address", icon: <Mail size={16} className="text-blue-700" />, type: "email", placeholder: "Enter email address", required: true })}
+                    {renderField({ name: "email", label: "Email Address", icon: <Mail size={16} className="text-blue-700" />, type: "email", placeholder: "Enter email address" })}
                     {renderField({ name: "nationality", label: "Nationality", placeholder: "Enter nationality" })}
                     {renderField({ name: "religion", label: "Religion", placeholder: "Enter religion" })}
                     {renderSelect({ name: "maritalStatus", label: "Marital Status", options: ["Single", "Married", "Divorced", "Widowed"], placeholder: "Select marital status" })}
-                    {renderSelect({ name: "casteCategory", label: "Category", options: CATEGORY_OPTIONS, placeholder: "Select category", required: true })}
+                    {renderSelect({ name: "casteCategory", label: "Category", options: CATEGORY_OPTIONS, placeholder: "Select category" })}
 
                     {requiresMScSpecialization && (
                       <label className={fieldClassName}>
@@ -1703,7 +1695,6 @@ function StudentAdmissionFormPage() {
                           value={formData.mScSpecialization}
                           onChange={handleChange}
                           className={controlClassName}
-                          required
                         >
                           <option value="">Select specialization</option>
                           {MSC_NURSING_SPECIALIZATIONS.map((specialization) => (
@@ -1726,7 +1717,6 @@ function StudentAdmissionFormPage() {
                           value={formData.highestQualification}
                           onChange={handleChange}
                           className={controlClassName}
-                          required
                         >
                           <option value="">Select highest qualification</option>
                           {MSC_NURSING_HIGHEST_QUALIFICATIONS.map((qualification) => (
@@ -1750,10 +1740,9 @@ function StudentAdmissionFormPage() {
                         accept=".pdf,.jpg,.jpeg,.png"
                         onChange={(event) => handleDocumentFileChange(CASTE_CERTIFICATE_LABEL, event)}
                         className="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:font-semibold file:text-white"
-                        required
                       />
                       <p className="mt-2 text-xs text-amber-700">
-                        Required for OBC, SC, ST, and EWS category applications.
+                        Optional for OBC, SC, ST, and EWS category applications.
                       </p>
                     </label>
                   )}
@@ -1775,12 +1764,12 @@ function StudentAdmissionFormPage() {
                   </div>
 
                   <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                    {renderField({ name: "fatherName", label: "Father's Name", placeholder: "Enter father's full name", required: true })}
+                    {renderField({ name: "fatherName", label: "Father's Name", placeholder: "Enter father's full name" })}
                     {renderField({ name: "motherName", label: "Mother's Name", placeholder: "Enter mother's full name" })}
                     {renderField({ name: "guardianName", label: "Guardian Name", placeholder: "Enter guardian name" })}
                     {renderField({ name: "parentOccupation", label: "Occupation", placeholder: "Enter occupation" })}
                     {renderField({ name: "annualIncome", label: "Annual Income", type: "number", placeholder: "Enter annual income" })}
-                    {renderField({ name: "fatherPhone", label: "Mobile Number", icon: <Phone size={16} className="text-blue-700" />, placeholder: "Enter mobile number", required: true })}
+                    {renderField({ name: "fatherPhone", label: "Mobile Number", icon: <Phone size={16} className="text-blue-700" />, placeholder: "Enter mobile number" })}
                     {renderField({ name: "parentEmail", label: "Email", icon: <Mail size={16} className="text-blue-700" />, type: "email", placeholder: "Enter parent email" })}
                     {renderField({ name: "parentAadhaarNumber", label: "Aadhaar Number", placeholder: "Enter Aadhaar number" })}
                   </div>
@@ -1802,12 +1791,12 @@ function StudentAdmissionFormPage() {
                   </div>
 
                   <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                    {renderField({ name: "permanentHouseNumber", label: "House Number", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter house number", required: true })}
+                    {renderField({ name: "permanentHouseNumber", label: "House Number", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter house number" })}
                     {renderField({ name: "permanentVillage", label: "Village", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter village" })}
-                    {renderField({ name: "permanentCity", label: "City", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter city", required: true })}
-                    {renderField({ name: "permanentDistrict", label: "District", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter district", required: true })}
-                    {renderField({ name: "permanentState", label: "State", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter state", required: true })}
-                    {renderField({ name: "permanentPinCode", label: "PIN Code", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter PIN code", required: true })}
+                    {renderField({ name: "permanentCity", label: "City", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter city" })}
+                    {renderField({ name: "permanentDistrict", label: "District", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter district" })}
+                    {renderField({ name: "permanentState", label: "State", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter state" })}
+                    {renderField({ name: "permanentPinCode", label: "PIN Code", icon: <MapPin size={16} className="text-blue-700" />, placeholder: "Enter PIN code" })}
                   </div>
                 </div>
 
@@ -1918,11 +1907,11 @@ function StudentAdmissionFormPage() {
                     <div className="mt-5 rounded-[26px] border border-slate-200 bg-slate-50 p-4">
                       <h4 className="text-sm font-bold uppercase tracking-[0.16em] text-slate-700">Post Basic B.Sc Nursing Details</h4>
                       <div className="mt-4 grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                        {renderField({ name: "postBasicBscNursingCollegeName", label: "College Name", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter post basic college name", required: true })}
-                        {renderField({ name: "postBasicBscNursingUniversity", label: "University", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter university", required: true })}
+                        {renderField({ name: "postBasicBscNursingCollegeName", label: "College Name", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter post basic college name" })}
+                        {renderField({ name: "postBasicBscNursingUniversity", label: "University", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter university" })}
                         {renderField({ name: "postBasicBscNursingRollNumber", label: "Roll Number", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter roll number" })}
                         {renderField({ name: "postBasicBscNursingRegistrationNumber", label: "Registration Number", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter registration number" })}
-                        {renderField({ name: "postBasicBscNursingPassingYear", label: "Passing Year", icon: <CalendarDays size={16} className="text-blue-700" />, type: "number", placeholder: "Enter passing year", required: true })}
+                        {renderField({ name: "postBasicBscNursingPassingYear", label: "Passing Year", icon: <CalendarDays size={16} className="text-blue-700" />, type: "number", placeholder: "Enter passing year" })}
                         {renderField({ name: "postBasicBscNursingTotalMarks", label: "Total Marks", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Enter total marks" })}
                         {renderField({ name: "postBasicBscNursingObtainedMarks", label: "Obtained Marks", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Enter obtained marks" })}
                         {renderField({ name: "postBasicBscNursingPercentage", label: "Percentage", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Auto calculated", disabled: true })}
@@ -1934,11 +1923,11 @@ function StudentAdmissionFormPage() {
                     <div className="mt-5 rounded-[26px] border border-slate-200 bg-slate-50 p-4">
                       <h4 className="text-sm font-bold uppercase tracking-[0.16em] text-slate-700">GNM Details</h4>
                       <div className="mt-4 grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                        {renderField({ name: "gnmCollegeName", label: "College Name", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter GNM college name", required: true })}
-                        {renderField({ name: "gnmBoard", label: "Board / Council", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter board or council", required: true })}
+                        {renderField({ name: "gnmCollegeName", label: "College Name", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter GNM college name" })}
+                        {renderField({ name: "gnmBoard", label: "Board / Council", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter board or council" })}
                         {renderField({ name: "gnmRollNumber", label: "Roll Number", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter roll number" })}
                         {renderField({ name: "gnmRegistrationNumber", label: "Registration Number", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter registration number" })}
-                        {renderField({ name: "gnmPassingYear", label: "Passing Year", icon: <CalendarDays size={16} className="text-blue-700" />, type: "number", placeholder: "Enter passing year", required: true })}
+                        {renderField({ name: "gnmPassingYear", label: "Passing Year", icon: <CalendarDays size={16} className="text-blue-700" />, type: "number", placeholder: "Enter passing year" })}
                         {renderField({ name: "gnmTotalMarks", label: "Total Marks", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Enter total marks" })}
                         {renderField({ name: "gnmObtainedMarks", label: "Obtained Marks", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Enter obtained marks" })}
                         {renderField({ name: "gnmPercentage", label: "Percentage", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Auto calculated", disabled: true })}
@@ -1950,11 +1939,11 @@ function StudentAdmissionFormPage() {
                     <div className="mt-5 rounded-[26px] border border-slate-200 bg-slate-50 p-4">
                       <h4 className="text-sm font-bold uppercase tracking-[0.16em] text-slate-700">Basic B.Sc Nursing Details</h4>
                       <div className="mt-4 grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
-                        {renderField({ name: "basicBscNursingCollegeName", label: "College Name", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter basic B.Sc college name", required: true })}
-                        {renderField({ name: "basicBscNursingUniversity", label: "University", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter university", required: true })}
+                        {renderField({ name: "basicBscNursingCollegeName", label: "College Name", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter basic B.Sc college name" })}
+                        {renderField({ name: "basicBscNursingUniversity", label: "University", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter university" })}
                         {renderField({ name: "basicBscNursingRollNumber", label: "Roll Number", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter roll number" })}
                         {renderField({ name: "basicBscNursingRegistrationNumber", label: "Registration Number", icon: <GraduationCap size={16} className="text-blue-700" />, placeholder: "Enter registration number" })}
-                        {renderField({ name: "basicBscNursingPassingYear", label: "Passing Year", icon: <CalendarDays size={16} className="text-blue-700" />, type: "number", placeholder: "Enter passing year", required: true })}
+                        {renderField({ name: "basicBscNursingPassingYear", label: "Passing Year", icon: <CalendarDays size={16} className="text-blue-700" />, type: "number", placeholder: "Enter passing year" })}
                         {renderField({ name: "basicBscNursingTotalMarks", label: "Total Marks", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Enter total marks" })}
                         {renderField({ name: "basicBscNursingObtainedMarks", label: "Obtained Marks", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Enter obtained marks" })}
                         {renderField({ name: "basicBscNursingPercentage", label: "Percentage", icon: <GraduationCap size={16} className="text-blue-700" />, type: "number", placeholder: "Auto calculated", disabled: true })}
@@ -1973,8 +1962,7 @@ function StudentAdmissionFormPage() {
                         Upload verified admission documents
                       </h3>
                       <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-                        Add clear scanned copies for each record. Required items are
-                        marked for the selected course and category.
+                        Add clear scanned copies for any records that are available.
                       </p>
                     </div>
 
@@ -1991,12 +1979,8 @@ function StudentAdmissionFormPage() {
                     const isPhoto = documentName === PASS_PHOTO_LABEL;
                     const isCasteCertificate = documentName === CASTE_CERTIFICATE_LABEL;
                     const file = documentFiles[documentName] || null;
-                    const isCasteRequired = isCasteCertificate ? requiresCasteCertificate : true;
                     const isUploaded = isPhoto ? Boolean(photoFile) : Boolean(file);
-                    const helperText =
-                      isCasteCertificate && !requiresCasteCertificate
-                        ? "Optional for General category."
-                        : "Required for this application.";
+                    const helperText = "Optional document upload.";
 
                     return (
                       <label
@@ -2020,16 +2004,12 @@ function StudentAdmissionFormPage() {
                             className={`inline-flex shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] ${
                               isUploaded
                                 ? "bg-emerald-50 text-emerald-700"
-                                : isCasteCertificate && !requiresCasteCertificate
-                                  ? "bg-slate-100 text-slate-500"
-                                  : "bg-amber-50 text-amber-700"
+                                : "bg-slate-100 text-slate-500"
                             }`}
                           >
                             {isUploaded
                               ? "Uploaded"
-                              : isCasteCertificate && !requiresCasteCertificate
-                                ? "Optional"
-                                : "Required"}
+                              : "Optional"}
                           </span>
                         </div>
 
@@ -2039,7 +2019,6 @@ function StudentAdmissionFormPage() {
                             accept={isPhoto ? "image/*" : ".pdf,.jpg,.jpeg,.png"}
                             onChange={(event) => handleDocumentFileChange(documentName, event)}
                             className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 transition focus-within:border-blue-300 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-900 file:px-3 file:py-2 file:font-semibold file:text-white hover:file:bg-blue-700"
-                            required={isPhoto || (isCasteRequired && !isCasteCertificate)}
                           />
 
                           {isPhoto ? (
@@ -2068,9 +2047,7 @@ function StudentAdmissionFormPage() {
                                 <span className="break-words">
                                   {file
                                   ? file.name
-                                  : isCasteCertificate && !requiresCasteCertificate
-                                    ? "Optional for General category."
-                                    : `Upload ${documentName}.`}
+                                  : `Upload ${documentName} (optional).`}
                                 </span>
                               </div>
 
