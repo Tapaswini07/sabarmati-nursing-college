@@ -918,30 +918,30 @@ export default function StudentBooking() {
                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                   <label className="block">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Full Name</span>
-                    <input name="fullName" value={formData.fullName} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <input name="fullName" value={formData.fullName} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                   <label className="block">
                     <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><Phone size={15} />Mobile Number</span>
-                    <input name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} inputMode="tel" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <input name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} inputMode="tel" className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                   <label className="block">
                     <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><Mail size={15} />Email Address</span>
-                    <input name="email" type="email" value={formData.email} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <input name="email" type="email" value={formData.email} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Date of Birth</span>
-                    <input name="dob" type="date" value={formData.dob} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <input name="dob" type="date" value={formData.dob} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Gender</span>
-                    <select name="gender" value={formData.gender} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required>
+                    <select name="gender" value={formData.gender} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100">
                       <option value="">Select gender</option>
                       {genderOptions.map((item) => <option key={item} value={item}>{item}</option>)}
                     </select>
                   </label>
                   <label className="block sm:col-span-2">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Address</span>
-                    <textarea name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <textarea name="address" value={formData.address} onChange={handleChange} rows="3" className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                 </div>
               </div>
@@ -985,7 +985,7 @@ export default function StudentBooking() {
                   </label>
                   <label className="block">
                     <span className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><CalendarDays size={15} />Booking Date</span>
-                    <input name="bookingDate" type="date" value={formData.bookingDate} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <input name="bookingDate" type="date" value={formData.bookingDate} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                   <label className="block sm:col-span-2">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Remarks / Comments</span>
@@ -1001,7 +1001,7 @@ export default function StudentBooking() {
                 <div className="mt-3 grid gap-4 sm:grid-cols-2">
                   <label className="block">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Booking Amount</span>
-                    <input name="bookingAmount" type="number" min="0" value={formData.bookingAmount} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" required />
+                    <input name="bookingAmount" type="number" min="0" value={formData.bookingAmount} onChange={handleChange} className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100" />
                   </label>
                   <label className="block">
                     <span className="mb-2 block text-sm font-semibold text-slate-700">Payment Method</span>

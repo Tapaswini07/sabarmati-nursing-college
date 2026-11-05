@@ -85,25 +85,6 @@ function bookingPayload(body, id) {
   };
 }
 
-function validateRequired(payload) {
-  const requiredFields = [
-    "fullName",
-    "mobileNumber",
-    "email",
-    "dob",
-    "gender",
-    "address",
-    "institution",
-    "academicYear",
-    "preferredCourse",
-    "preferredSession",
-    "bookingDate",
-    "transactionId",
-  ];
-
-  return requiredFields.filter((field) => !payload[field]);
-}
-
 router.get("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.FINANCE_ADMIN), async (_req, res) => {
   try {
     const bookings = await StudentBooking.find().sort({ createdAt: -1 }).lean();
@@ -119,14 +100,6 @@ router.post("/", verifyToken, attachCurrentUser, requireRole(ROLES.SUPER_ADMIN, 
   for (let attempt = 1; attempt <= maxCreateAttempts; attempt += 1) {
     try {
       const payload = bookingPayload(req.body, await createBookingId());
-      const missingFields = validateRequired(payload);
-
-      if (missingFields.length) {
-        return res.status(400).json({
-          message: `Missing required booking field(s): ${missingFields.join(", ")}`,
-        });
-      }
-
       const booking = await StudentBooking.create(payload);
       return res.status(201).json({
         message: "Student booking saved successfully",
