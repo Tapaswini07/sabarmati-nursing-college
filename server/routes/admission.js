@@ -1162,7 +1162,7 @@ router.post("/admission", admissionUpload, async (req, res) => {
       year: academicYear,
       admissionDate,
       photoUrl,
-      photoFilename: photoFile.filename,
+      photoFilename: photoFile?.filename || "",
       casteCertificateUrl,
       casteCertificateFilename: casteCertificateFile?.filename || "",
       supportingDocuments: supportingDocumentEntries,

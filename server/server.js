@@ -105,6 +105,25 @@ app.use("/api/form-fill-up-fees", formFillUpFeeRoutes);
 app.use("/api/fines", fineRoutes);
 app.use("/api", admissionRoutes);
 
+app.use((error, _req, res, _next) => {
+  if (error?.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({
+      message: "Each uploaded document must be 5 MB or smaller.",
+    });
+  }
+
+  if (error?.code === "LIMIT_UNEXPECTED_FILE") {
+    return res.status(400).json({
+      message: "Too many files were uploaded for one document field.",
+    });
+  }
+
+  console.error("Unhandled request error:", error);
+  return res.status(error?.statusCode || 500).json({
+    message: error?.message || "Unable to process the request.",
+  });
+});
+
 const port = process.env.PORT || 5000;
 
 async function startServer() {
